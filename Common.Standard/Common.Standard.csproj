@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Jeffrey Bramlett</Authors>
+    <Company>BlueJaySvc</Company>
+    <Description>.Net Standard library of extensions and generics to be used in any application</Description>
+    <Copyright>Jeffrey Bramlett @December 2018</Copyright>
+  </PropertyGroup>
+
+</Project>
