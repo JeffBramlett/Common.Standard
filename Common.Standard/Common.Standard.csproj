@@ -7,6 +7,16 @@
     <Company>BlueJaySvc</Company>
     <Description>.Net Standard library of extensions and generics to be used in any application</Description>
     <Copyright>Jeffrey Bramlett @December 2018</Copyright>
+    <PackageLicenseUrl>not applicable</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/JeffBramlett/Common.Standard</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/JeffBramlett/Common.Standard</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageTags>common,generics,extensions</PackageTags>
+    <PackageReleaseNotes>Common extensions, classes and abstractions
+* added List&lt;/T&gt; extension "TryFind(predicate, out T found): Try to find using a predicate from a list.  (does null check and does not throw exception)</PackageReleaseNotes>
+    <Version>1.0.1</Version>
+    <AssemblyVersion>1.0.1.1</AssemblyVersion>
+    <FileVersion>1.0.1.1</FileVersion>
   </PropertyGroup>
 
 </Project>

@@ -13,6 +13,46 @@ namespace Common.Standard.Extensions
     public static class ListExtensions
     {
         /// <summary>
+        /// Try to find using a predicate from a list (reference types only).  (does null check and does not throw exception)
+        /// </summary>
+        /// <typeparam name="T">the type of the list</typeparam>
+        /// <param name="list">the list</param>
+        /// <param name="predicate">the predicate to use in find</param>
+        /// <param name="found">the found item (null if not found)</param>
+        /// <returns>true if found and false otherwise</returns>
+        public static bool TryFindItem<T>(this List<T> list, Predicate<T> predicate, out T found) where T:class
+        {
+            found = null;
+
+            if(list != null)
+            {
+                found = list.Find(predicate);
+            }
+
+            return found != null;
+        }
+
+        /// <summary>
+        /// Try to find using a predicate from a list (value types only).  (does null check and does not throw exception)
+        /// </summary>
+        /// <typeparam name="T">the type of the list</typeparam>
+        /// <param name="list">the list</param>
+        /// <param name="predicate">the predicate to use in find</param>
+        /// <param name="found">the found item (null if not found)</param>
+        /// <returns>true if found and false otherwise</returns>
+        public static bool TryFindValue<T>(this List<T> list, Predicate<T> predicate, out T found) where T : struct
+        {
+            found = default(T);
+
+            if (list != null)
+            {
+                found = list.Find(predicate);
+            }
+
+            return EqualityComparer<T>.Default.Equals(found, default(T));
+        }
+
+        /// <summary>
         /// Task an Action (delegate) on a span (iterationSize) using parallel execution (Task)
         /// </summary>
         /// <typeparam name="T">the type to use in the Action</typeparam>
