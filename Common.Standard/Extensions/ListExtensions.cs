@@ -53,6 +53,37 @@ namespace Common.Standard.Extensions
         }
 
         /// <summary>
+        /// Find in a list matches to one or more predicates
+        /// </summary>
+        /// <typeparam name="T">the type of the list</typeparam>
+        /// <param name="list">the list</param>
+        /// <param name="foundList">the found items (may be empty list)</param>
+        /// <param name="predicates">the one or more predicates</param>
+        /// <returns>true if more than one item was found</returns>
+        public static bool TryFindAll<T>(this List<T> list, out IList<T> foundList, params Predicate<T>[] predicates)
+        {
+            foundList = new List<T>();
+
+            if (list != null)
+            {
+                foreach (var predicate in predicates)
+                {
+                    var itemsFound = list.FindAll(predicate);
+                    if (itemsFound != null)
+                    {
+                        foreach (var item in itemsFound)
+                        {
+                            foundList.Add(item);
+                        }
+                    }
+                }
+            }
+
+            return foundList.Count > 0;
+        }
+
+
+        /// <summary>
         /// Task an Action (delegate) on a span (iterationSize) using parallel execution (Task)
         /// </summary>
         /// <typeparam name="T">the type to use in the Action</typeparam>

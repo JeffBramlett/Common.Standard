@@ -87,13 +87,18 @@ namespace Common.Standard.Generics
             {
                 SearchAssembly(file);
             }
+
+            string[] dirs = Directory.GetDirectories(folder);
+            foreach(string dir in dirs)
+            {
+                SearchAssembliesForService(dir);
+            }
         }
 
         private void SearchAssembly(string file)
         {
             try
             {
-
                 Assembly assembly = Assembly.LoadFile(file);
                 var types = assembly.GetExportedTypes()
                     .Where(t => t.IsClass
