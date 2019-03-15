@@ -22,6 +22,15 @@ namespace Common.Standard.Generic
         void Stop();
 
         /// <summary>
+        /// Stops spooling, sorts the items, and then resumes spooling
+        void Sort();
+
+        /// <summary>
+        /// Stops the spooler and empties the Queue
+        /// </summary>
+        void Reset();
+
+        /// <summary>
         /// Resume spooling after being stopped
         /// </summary>
         void Resume();

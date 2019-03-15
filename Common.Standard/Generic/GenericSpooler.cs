@@ -157,6 +157,9 @@ namespace Common.Standard.Generic
             }
         }
 
+        /// <summary>
+        /// Stops spooling the items and then resumes
+        /// </summary>
         public void Sort()
         {
             Stop();

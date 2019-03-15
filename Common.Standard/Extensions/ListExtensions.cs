@@ -82,6 +82,34 @@ namespace Common.Standard.Extensions
             return foundList.Count > 0;
         }
 
+        public static string ToCommaDelimited<T>(this List<T> collection, bool useQuotes = false)
+        {
+            StringBuilder sb = new StringBuilder();
+            string comma = ",";
+            if (useQuotes)
+            {
+                comma = "\",\"";
+                sb.Append('"');                    
+            }
+
+            for(var i = 0; i < collection.Count; i++)
+            {
+                if(i < collection.Count - 1)
+                    sb.AppendFormat("{0}{1}", collection[i].ToString(), comma);
+                else
+                    sb.Append(collection[i].ToString());
+            }
+
+            if (useQuotes)
+            {
+                sb.Append('"');
+            }
+
+            sb.AppendLine();
+
+            return sb.ToString();
+        }
+
 
         /// <summary>
         /// Task an Action (delegate) on a span (iterationSize) using parallel execution (Task)

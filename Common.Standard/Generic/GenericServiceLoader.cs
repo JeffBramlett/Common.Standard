@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace Common.Standard.Generics
+namespace Common.Standard.Generic
 {
     /// <summary>
     /// Service loader - design pattern (adopted from Java implementation) and applied generically

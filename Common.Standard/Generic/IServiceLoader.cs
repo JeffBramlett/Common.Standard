@@ -1,7 +1,7 @@
 ﻿
 using System.Collections.Generic;
 
-namespace Common.Standard.Generics
+namespace Common.Standard.Generic
 {
     /// <summary>
     /// Interface to a late-binding service loader

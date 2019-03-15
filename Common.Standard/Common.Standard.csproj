@@ -14,13 +14,15 @@
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>common,generics,extensions</PackageTags>
     <PackageReleaseNotes>Common extensions, classes and abstractions
+- Added list extension for "ToCommaDelimited"
+- Fixed some namespaces on some classes
 * added List&lt;/T&gt; extension "TryFindItem(predicate, out T found): Try to find using a predicate from a list.  (does null check and does not throw exception)
 * added List&lt;/T&gt; extension "TryFindValue(predicate, out T found): Try to find using a predicate from a list.  (does null check and does not throw exception)
 * added List&lt;T&gt; extension "TryFindAll for using one or more predicates to find items in a list (does null check and does not throw exception)
 * - Changed ServiceLoader to recursively load from the starting path</PackageReleaseNotes>
-    <Version>1.0.3</Version>
-    <AssemblyVersion>1.0.1.3</AssemblyVersion>
-    <FileVersion>1.0.1.3</FileVersion>
+    <Version>1.0.4</Version>
+    <AssemblyVersion>1.0.1.4</AssemblyVersion>
+    <FileVersion>1.0.1.4</FileVersion>
   </PropertyGroup>
 
 </Project>
