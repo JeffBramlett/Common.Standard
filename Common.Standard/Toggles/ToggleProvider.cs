@@ -16,65 +16,27 @@ namespace Common.Standard.Toggles
     public class ToggleProvider : IToggleProvider
     {
         #region Fields
-        private static Lazy<ToggleProvider> _instance = new Lazy<ToggleProvider>();
         private bool _isInited = false;
-
-        private ConcurrentDictionary<string, IToggle> _toggleDictionary;
 
         #endregion
 
         #region Properties
-        /// <summary>
-        /// Singleton Instance
-        /// </summary>
-        public static ToggleProvider Instance
-        {
-            get { return _instance.Value; }
-        }
 
-        private ConcurrentDictionary<string, IToggle> ToggleDictionary
-        {
-            get
-            {
-                _toggleDictionary = _toggleDictionary ?? new ConcurrentDictionary<string, IToggle>();
-                return _toggleDictionary;
-            }
-        }
+        private IToggleRepository ToggleRepository { get; set; }
         #endregion
 
         #region Ctors
         /// <summary>
         /// Default Ctor
         /// </summary>
-        public ToggleProvider()
+        public ToggleProvider(IToggleRepository toggleRepository)
         {
-                
+            toggleRepository.ThrowIfNull(nameof(toggleRepository));
+            ToggleRepository = toggleRepository;
         }
         #endregion
 
         #region Publics
-        /// <summary>
-        /// Initialize the toggles from settings using a Loader class
-        /// </summary>
-        /// <param name="loader">the loader class</param>
-        public void Init(ITogglesLoader loader)
-        {
-            if (!_isInited)
-            {
-                if (loader != null)
-                {
-                    if (loader.LoadFromSource())
-                    {
-                        foreach (var toggle in loader.TogglesFound)
-                        {
-                            AddToggle(toggle);
-                        }
-                    }
-                }
-
-                _isInited = true;
-            }
-        }
 
         /// <summary>
         /// For Ad-hoc toggle adding to the provider
@@ -82,17 +44,17 @@ namespace Common.Standard.Toggles
         /// <param name="key">the toggle key</param>
         /// <param name="startAt">When this toggle will become active</param>
         /// <returns>true is successfully added</returns>
-        public bool AddToggle(string key, DateTime startAt)
+        public void AddToggle(string key, DateTime startAt)
         {
             key.ThrowIfNull();
 
-            Toggle toggle = new Toggle()
+            IToggle toggle = new Toggle()
             {
                 Key = key,
                 IsEnabled = true,
                 Start = startAt
             };
-            return AddToggle(toggle);
+            AddToggle(toggle);
         }
 
         /// <summary>
@@ -100,49 +62,13 @@ namespace Common.Standard.Toggles
         /// </summary>
         /// <param name="toggle">the toggle to add</param>
         /// <returns>true is successfully added</returns>
-        public bool AddToggle(IToggle toggle)
+        public void AddToggle(IToggle toggle)
         {
             toggle.ThrowIfNull();
-            if (!ToggleDictionary.ContainsKey(toggle.Key))
+            if (!ToggleRepository.HasToggleByKey(toggle.Key))
             {
-                return ToggleDictionary.TryAdd(toggle.Key, toggle);
+                ToggleRepository.AddToggle(toggle);
             }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Set Toggle as enable or not
-        /// </summary>
-        /// <param name="key">the toggle key</param>
-        /// <param name="isEnabled">true to enable false to disable</param>
-        /// <returns>this ToggleProvider (Fluent)</returns>
-        public ToggleProvider SetEnabled(string key, bool isEnabled)
-        {
-            key.ThrowIfNull();
-
-            if (ToggleDictionary.ContainsKey(key))
-            {
-                ToggleDictionary[key].IsEnabled = isEnabled;
-            }
-
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the starting DateTime for this toggle
-        /// </summary>
-        /// <param name="key">the key for the toggle</param>
-        /// <param name="startAt">the DateTime when the toggle is enabled</param>
-        /// <returns>this ToggleProvider (Fluent)</returns>
-        public ToggleProvider SetStart(string key, DateTime startAt)
-        {
-            if (ToggleDictionary.ContainsKey(key))
-            {
-                ToggleDictionary[key].Start = startAt;
-            }
-
-            return this;
         }
 
         /// <summary>
@@ -152,9 +78,10 @@ namespace Common.Standard.Toggles
         /// <returns>True if the Enabled and the Start datetime has been reached or exceeded</returns>
         public bool IsToggled(string key)
         {
-            if (ToggleDictionary.ContainsKey(key))
+            if (ToggleRepository.HasToggleByKey(key))
             {
-                return ToggleDictionary[key].IsEnabled && ToggleDictionary[key].Start < DateTime.Now;
+                var toggle = ToggleRepository.ToggleForKey(key);
+                return toggle.IsEnabled && toggle.Start < DateTime.Now;
             }
 
             return false;

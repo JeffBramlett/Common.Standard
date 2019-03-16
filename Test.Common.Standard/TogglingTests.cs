@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Common.Standard.Toggles;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace Test.Common.Standard
@@ -11,11 +12,36 @@ namespace Test.Common.Standard
         [Fact]
         public void Toggling_SimpleTest()
         {
-            ToggleProvider.Instance.AddToggle("T1", DateTime.Now - TimeSpan.FromSeconds(1));
+            string content = TogglesAsJsonContent();
+            DefaultToggleRepository repo = new DefaultToggleRepository();
+            repo.LoadFromJsonContent(content);
+            repo.Init();
 
-            var isToggled = ToggleProvider.Instance.IsToggled("T1");
+            ToggleProvider provider = new ToggleProvider(repo);
 
-            Assert.True(isToggled);
+            Assert.True(provider.IsToggled("T1"));
+        }
+
+        private string TogglesAsJsonContent()
+        {
+            List<Toggle> toggleList = new List<Toggle>()
+            {
+                new Toggle()
+                {
+                    Key = "T1",
+                    IsEnabled = true,
+                    Start = DateTime.Now - TimeSpan.FromSeconds(5)
+                },
+                new Toggle()
+                {
+                    Key = "T2",
+                    IsEnabled = true,
+                    Start = DateTime.Now - TimeSpan.FromSeconds(5)
+                }
+
+            };
+
+            return JsonConvert.SerializeObject(toggleList);
         }
     }
 }
