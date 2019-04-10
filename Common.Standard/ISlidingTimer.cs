@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Common.Standard.Generic
+namespace Common.Standard
 {
     /// <summary>
     /// Public contract for the SlidingTimer

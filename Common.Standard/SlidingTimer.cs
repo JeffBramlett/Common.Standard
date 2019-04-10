@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Common.Standard.Generic
+namespace Common.Standard
 {
     /// <summary>
     /// Slide the timer when it is "Bumped" and then when the timer elasps call delegate

@@ -82,6 +82,13 @@ namespace Common.Standard.Extensions
             return foundList.Count > 0;
         }
 
+        /// <summary>
+        /// Return a comma-delimited row for this list
+        /// </summary>
+        /// <typeparam name="T">the type of the list</typeparam>
+        /// <param name="collection">the list collection to return as comma-delimited</param>
+        /// <param name="useQuotes">True for quote comma-delimited</param>
+        /// <returns></returns>
         public static string ToCommaDelimited<T>(this List<T> collection, bool useQuotes = false)
         {
             StringBuilder sb = new StringBuilder();
@@ -199,5 +206,47 @@ namespace Common.Standard.Extensions
             }
             return list;
         }
-   }
+
+        /// <summary>
+        /// Execute the functions in parallel and return the first one that succeeds (not null return)
+        /// </summary>
+        /// <typeparam name="T">the type of the return</typeparam>
+        /// <param name="funcArray">the array of function to execute in parallel</param>
+        /// <returns>the default of T or the first value</returns>
+        public async static Task<T> ExecuteForFirstReturn<T>(this IEnumerable<Func<T>> funcArray)
+        {
+            T returnValue = default(T);
+
+            if (funcArray != null)
+            {
+                List<Task<T>> tasksToRun = new List<Task<T>>();
+
+                using (CancellationTokenSource cancelTokenSource = new CancellationTokenSource())
+                {
+                    var cancelToken = cancelTokenSource.Token;
+
+                    foreach (var function in funcArray)
+                    {
+                        tasksToRun.Add(Task.Run(() => { return function(); }, cancelToken));
+                    }
+
+                    while (tasksToRun.Count > 0)
+                    {
+                        var taskComplete = await Task.WhenAny(tasksToRun);
+                        if (taskComplete.Result != null && !taskComplete.Result.Equals(default(T)))
+                        {
+                            returnValue = taskComplete.Result;
+                            tasksToRun.RemoveAll(l => true);
+                            break;
+                        }
+
+                        tasksToRun.Remove(taskComplete);
+                    }
+                    cancelTokenSource.Cancel();
+                }
+            }
+
+            return returnValue;
+        }
+    }
 }

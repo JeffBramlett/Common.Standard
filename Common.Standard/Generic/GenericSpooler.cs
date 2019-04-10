@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Common.Standard.Generic
 {
@@ -36,7 +37,7 @@ namespace Common.Standard.Generic
         /// <summary>
         /// Wait handles to control process flow
         /// </summary>
-       readonly WaitHandle[] _operationHandles;
+        readonly WaitHandle[] _operationHandles;
 
         /// <summary>
         /// Traffic stop/go control event
@@ -94,7 +95,7 @@ namespace Common.Standard.Generic
         /// <summary>
         /// The delegate to use for the callback
         /// </summary>
-        private readonly Action<T> _spoolerAction;
+        private Action<T> _spoolerAction;
         #endregion
 
         #region Ctors and Dtors
@@ -106,7 +107,7 @@ namespace Common.Standard.Generic
         {
             if (spoolerAction == null)
             {
-                throw new NullReferenceException("Spooler Action cannot be null");
+                throw new NullReferenceException("Spooler Action cannot be null or empty");
             }
 
             _inputs = new ConcurrentQueue<ItemMetaData>();
@@ -167,7 +168,7 @@ namespace Common.Standard.Generic
             var itemsInList = new List<T>();
 
             ItemMetaData dequeuedItem;
-            while(_inputs.TryDequeue(out dequeuedItem))
+            while (_inputs.TryDequeue(out dequeuedItem))
             {
                 itemsInList.Add(dequeuedItem.Item);
             }
@@ -298,13 +299,13 @@ namespace Common.Standard.Generic
                                 }
                                 catch (Exception ex)
                                 {
-                                    RaiseException(_spoolerAction.Target, ex);
+                                    RaiseException(this, ex);
                                 }
                             }
                         }
 
                         var spoolerEvent = SpoolerEmpty;
-                        if(spoolerEvent != null)
+                        if (spoolerEvent != null)
                         {
                             spoolerEvent();
                         }

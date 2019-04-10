@@ -9,11 +9,13 @@
 </Description>
     <Copyright>Jeffrey Bramlett @December 2018</Copyright>
     <PackageLicenseUrl>not applicable</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/JeffBramlett/Common.Standard</PackageProjectUrl>
+    <PackageProjectUrl>http://www.bluejaysvc.com/OpenSource/Common</PackageProjectUrl>
     <RepositoryUrl>https://github.com/JeffBramlett/Common.Standard</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>common,generics,extensions</PackageTags>
-    <PackageReleaseNotes>Added simple Feature toggling for use as static or dependency injection
+    <PackageReleaseNotes>Added Asynchronous Text Writer
+- Added Toggle Repository (default as Json)
+- Added simple Feature Toggling for use as static or dependency injection
 - Common extensions, classes and abstractions
 - Added list extension for "ToCommaDelimited"
 - Fixed some namespaces on some classes
@@ -21,9 +23,9 @@
 * added List&lt;/T&gt; extension "TryFindValue(predicate, out T found): Try to find using a predicate from a list.  (does null check and does not throw exception)
 * added List&lt;T&gt; extension "TryFindAll for using one or more predicates to find items in a list (does null check and does not throw exception)
 * - Changed ServiceLoader to recursively load from the starting path</PackageReleaseNotes>
-    <Version>1.0.5</Version>
-    <AssemblyVersion>1.0.1.5</AssemblyVersion>
-    <FileVersion>1.0.1.5</FileVersion>
+    <Version>1.0.8</Version>
+    <AssemblyVersion>1.0.8.0</AssemblyVersion>
+    <FileVersion>1.0.8.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

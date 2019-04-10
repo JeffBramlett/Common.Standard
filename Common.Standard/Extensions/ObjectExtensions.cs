@@ -1,4 +1,8 @@
 ﻿using System;
+using System.IO;
+using System.Text;
+using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace Common.Standard.Extensions
 {
@@ -53,6 +57,60 @@ namespace Common.Standard.Extensions
         {
             if (obj == null)
                 throw new ArgumentNullException();
+        }
+
+        /// <summary>
+        /// Get the json serialization of this object
+        /// </summary>
+        /// <param name="obj">the object itself</param>
+        /// <param name="settings">(optional) serialization settings</param>
+        /// <returns>the object serialized to Json</returns>
+        public static string ToJson(this object obj, JsonSerializerSettings settings = null)
+        {
+            if (obj == null)
+                throw new ArgumentNullException();
+            if (settings != null)
+            {
+                return JsonConvert.SerializeObject(obj);
+            }
+            else
+            {
+                return JsonConvert.SerializeObject(obj, settings);
+            }
+        }
+
+        /// <summary>
+        /// Get the json serialization of this object
+        /// </summary>
+        /// <param name="obj">the object itself</param>
+        /// <param name="converters">Collection of converters</param>
+        /// <returns>the object serialized to Json</returns>
+        public static string ToJson(this object obj, params JsonConverter[] converters)
+        {
+            if (obj == null)
+                throw new ArgumentNullException();
+
+            return JsonConvert.SerializeObject(obj, converters);
+        }
+
+        /// <summary>
+        /// Get the xml serialization of this object
+        /// </summary>
+        /// <param name="obj">the object itself</param>
+        /// <returns>the object serialized to Xml</returns>
+        public static string ToXml(this object obj)
+        {
+            if (obj == null)
+                throw new ArgumentNullException();
+
+            XmlSerializer xs = new XmlSerializer(obj.GetType());
+            using (StringWriter sw = new StringWriter())
+            {
+                xs.Serialize(sw, obj);
+                sw.Flush();
+                return sw.ToString();
+
+            }
         }
     }
 }

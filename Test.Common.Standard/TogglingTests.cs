@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Common.Standard.Toggles;
+using Moq;
 using Newtonsoft.Json;
 using Xunit;
 
@@ -20,6 +21,16 @@ namespace Test.Common.Standard
             ToggleProvider provider = new ToggleProvider(repo);
 
             Assert.True(provider.IsToggled("T1"));
+        }
+
+        public void Toggling_Mock_Test()
+        {
+            Mock<IToggleRepository> repoMock = new Mock<IToggleRepository>();
+            
+
+            ToggleProvider provider = new ToggleProvider(repoMock.Object);
+
+
         }
 
         private string TogglesAsJsonContent()

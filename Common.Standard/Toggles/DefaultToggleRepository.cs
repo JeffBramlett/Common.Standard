@@ -30,6 +30,14 @@ namespace Common.Standard.Toggles
 
         #region Publics
         /// <summary>
+        /// Initialize the Repository
+        /// </summary>
+        public void Init()
+        {
+
+        }
+
+        /// <summary>
         /// Load toggles from a filename
         /// </summary>
         /// <param name="file">the filename</param>
@@ -99,14 +107,6 @@ namespace Common.Standard.Toggles
         {
             key.ThrowIfNull();
             return ToggleDictionary.ContainsKey(key);
-        }
-
-        /// <summary>
-        /// Initialize the Repository
-        /// </summary>
-        public void Init()
-        {
-            
         }
 
         /// <summary>
