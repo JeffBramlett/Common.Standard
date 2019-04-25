@@ -9,15 +9,9 @@ namespace Common.Standard.Generic
     /// <summary>
     /// An asynchronous generic executing class that controls spooling -- 
     /// putting jobs on a queue and taking them off one at a time. This 
-    /// class will not block the adding of items in the spool.  And will 
-    /// execute the delegate in a thread-safe manner.
+    /// class will not block the adding of items in the spool and will 
+    /// execute the event asynchronously.
     /// </summary>
-    /// <remarks>
-    /// There is ONLY one thread that executes the Action delegate.  It
-    /// is assumed that the Action delegate blocks. Thus the spooler will 
-    /// ONLY execute each item as fast as the Action delegate executes on one
-    /// item.
-    /// </remarks>
     /// <typeparam name="T">The Type of object to provide spooling for</typeparam>
     public class GenericSpooler<T> : IGenericSpooler<T>
     {
@@ -71,6 +65,18 @@ namespace Common.Standard.Generic
 
         #region Delegates and Events
         /// <summary>
+        /// Item has been spooled to the event
+        /// </summary>
+        /// <typeparam name="T">the type of the item</typeparam>
+        /// <param name="item">the item itself</param>
+        public delegate void ItemSpooledDelegate<T>(T item);
+
+        /// <summary>
+        /// Delegate for when the spooler is empty
+        /// </summary>
+        public delegate void SpoolerEmptyDelegate();
+
+        /// <summary>
         /// Delegate to use when getting notification that an exception has occurred
         /// </summary>
         /// <param name="sender">could be either the spooler or the object containing the callback (the callback produced the exception)</param>
@@ -83,35 +89,20 @@ namespace Common.Standard.Generic
         public event ExceptionEncounteredDelegate ExceptionEncountered;
 
         /// <summary>
-        /// Delegate for when the spooler is empty
-        /// </summary>
-        public delegate void SpoolerEmptyDelegate();
-
-        /// <summary>
         /// Event to notify the spooler has emptied
         /// </summary>
         public event SpoolerEmptyDelegate SpoolerEmpty;
 
         /// <summary>
-        /// The delegate to use for the callback
+        /// Item spooled event (this event raises (asynchronpously) for each item as it is spooled)
         /// </summary>
-        private Action<T> _spoolerAction;
+        public event ItemSpooledDelegate<T> ItemSpooled;
         #endregion
 
         #region Ctors and Dtors
-        /// <summary>
-        /// Default Ctor.  The callback is required.
-        /// </summary>
-        /// <param name="spoolerAction">the delegate to receive each item from the spool</param>
-        public GenericSpooler(Action<T> spoolerAction)
+        public GenericSpooler()
         {
-            if (spoolerAction == null)
-            {
-                throw new NullReferenceException("Spooler Action cannot be null or empty");
-            }
-
             _inputs = new ConcurrentQueue<ItemMetaData>();
-            _spoolerAction = spoolerAction;
 
             _trafficEvent = new AutoResetEvent(false);
             _exitEvent = new AutoResetEvent(false);
@@ -295,7 +286,7 @@ namespace Common.Standard.Generic
                                     if (itemData.HoldOnItem)
                                         _itemActionEvent.Reset();
 
-                                    _spoolerAction(itemData.Item);
+                                    RaiseItemSpooledEvent(itemData.Item);
                                 }
                                 catch (Exception ex)
                                 {
@@ -304,11 +295,7 @@ namespace Common.Standard.Generic
                             }
                         }
 
-                        var spoolerEvent = SpoolerEmpty;
-                        if (spoolerEvent != null)
-                        {
-                            spoolerEvent();
-                        }
+                        SpoolerEmpty?.Invoke();
                     }
                     else if (_operationHandles[iWaitEvent] == _exitEvent)
                     {
@@ -334,6 +321,14 @@ namespace Common.Standard.Generic
             ExceptionEncountered?.Invoke(this, ex);
         }
 
+        /// <summary>
+        /// Raise the event for each item as it is spooled
+        /// </summary>
+        /// <param name="item">the item to spool</param>
+        private void RaiseItemSpooledEvent(T item)
+        {
+            ItemSpooled?.Invoke(item);
+        }
         #endregion
 
         #region IDisposable Members
@@ -363,6 +358,7 @@ namespace Common.Standard.Generic
                 FinalizeDispose();
 
             }
+
             // if the worker thread is still running, abort it!
             if (_processWorkerThread != null)
                 _processWorkerThread.Abort();

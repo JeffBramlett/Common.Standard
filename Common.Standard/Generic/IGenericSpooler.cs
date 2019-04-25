@@ -2,6 +2,8 @@
 
 namespace Common.Standard.Generic
 {
+
+
     /// <summary>
     /// Contract for a spooler, if you want to make your own.
     /// Author: Jeff Bramlett (jeffrey.bramlett@gmail.com)
@@ -39,5 +41,15 @@ namespace Common.Standard.Generic
         /// Some exception happened in the spool, either in the spooler or in the message handler
         /// </summary>
         event GenericSpooler<T>.ExceptionEncounteredDelegate ExceptionEncountered;
+
+        /// <summary>
+        /// Item spooled event (this event raises (asynchronpously) for each item as it is spooled)
+        /// </summary>
+        event GenericSpooler<T>.ItemSpooledDelegate<T> ItemSpooled;
+
+        /// <summary>
+        /// Spooler has no more items in it
+        /// </summary>
+        event GenericSpooler<T>.SpoolerEmptyDelegate SpoolerEmpty;
     }
 }

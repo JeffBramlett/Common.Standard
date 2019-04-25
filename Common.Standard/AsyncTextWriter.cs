@@ -44,6 +44,7 @@ namespace Common.Standard
         private static Lazy<AsyncTextWriter> _instance = new Lazy<AsyncTextWriter>();
         private GenericSpooler<WriteCommand> _spooler;
         private string _filename;
+        private readonly object lockObj = new object();
         #endregion
 
         #region Properties
@@ -52,7 +53,11 @@ namespace Common.Standard
         {
             get
             {
-                _spooler = _spooler ?? new GenericSpooler<WriteCommand>(WriteContent);
+                if (_spooler == null)
+                {
+                    _spooler = new GenericSpooler<WriteCommand>();
+                    _spooler.ItemSpooled += WriteContent;
+                }
                 return _spooler;
             }
         }
@@ -145,18 +150,20 @@ namespace Common.Standard
         #endregion
 
         #region Privates
-
         private void WriteContent(WriteCommand writeCommand)
         {
-            using (StreamWriter sw = new StreamWriter(Filename, true))
+            lock (lockObj)
             {
-                if (writeCommand.WriteType == WriteTypes.Line)
+                using (StreamWriter sw = new StreamWriter(Filename, true))
                 {
-                    sw.WriteLine(writeCommand.Content);
-                }
-                else
-                {
-                    sw.Write(writeCommand.Content);
+                    if (writeCommand.WriteType == WriteTypes.Line)
+                    {
+                        sw.WriteLine(writeCommand.Content);
+                    }
+                    else
+                    {
+                        sw.Write(writeCommand.Content);
+                    }
                 }
             }
         }
@@ -185,7 +192,10 @@ namespace Common.Standard
                 if (disposing)
                 {
                     if (_spooler != null)
+                    {
+                        _spooler.ItemSpooled -= WriteContent;
                         _spooler.Dispose();
+                    }
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.

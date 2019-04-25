@@ -23,14 +23,20 @@ namespace Test.Common.Standard
             Assert.True(provider.IsToggled("T1"));
         }
 
+        [Fact]
         public void Toggling_Mock_Test()
         {
+            string toggleKey = "unit test";
+
             Mock<IToggleRepository> repoMock = new Mock<IToggleRepository>();
-            
+            repoMock.Setup(r => r.HasToggleByKey(toggleKey)).Returns(true);
+            repoMock.Setup(r => r.ToggleForKey(toggleKey)).Returns(new Toggle() { IsEnabled = true, Key = toggleKey, Start = DateTime.Now });
 
             ToggleProvider provider = new ToggleProvider(repoMock.Object);
 
+            var isToggled = provider.IsToggled(toggleKey);
 
+            Assert.True(isToggled);
         }
 
         private string TogglesAsJsonContent()
