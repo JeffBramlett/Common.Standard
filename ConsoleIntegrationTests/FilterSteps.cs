@@ -16,13 +16,18 @@ namespace ConsoleIntegrationTests
 
         public override void Filter(string item)
         {
-            Console.WriteLine($"Step 1 Piped: {item}");
+            Console.WriteLine($"{Name} Piped: {item}");
         }
 
         public Step1Filter():
             base("Step 1")
         {
             
+        }
+
+        public Step1Filter(string name):
+            base(name)
+        {
         }
     }
 
@@ -35,7 +40,7 @@ namespace ConsoleIntegrationTests
 
         public override void Filter(string item)
         {
-            Console.WriteLine($"Step 2 Piped: {item}");
+            Console.WriteLine($"{Name} Piped: {item}");
             throw new NotImplementedException();
         }
 
@@ -43,6 +48,11 @@ namespace ConsoleIntegrationTests
             base("Step 2")
         {
 
+        }
+
+        public Step2Filter(string name) :
+            base(name)
+        {
         }
     }
 
@@ -55,13 +65,18 @@ namespace ConsoleIntegrationTests
 
         public override void Filter(string item)
         {
-            Console.WriteLine($"Step 3 Piped: {item}");
+            Console.WriteLine($"{Name} Piped: {item}");
         }
 
         public Step3Filter() :
             base("Step 3")
         {
 
+        }
+
+        public Step3Filter(string name) :
+            base(name)
+        {
         }
     }
 }

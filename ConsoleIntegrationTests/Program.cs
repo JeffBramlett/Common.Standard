@@ -3,7 +3,9 @@ using Common.Standard.Toggles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Common.Standard.Extensions;
 using Common.Standard.Generic;
@@ -20,7 +22,9 @@ namespace ConsoleIntegrationTests
             //TestCircuitBreakerDataType();
             //TestCircuitBreakerObj();
 
-            TestFiltersAndPipe();
+            //TestFiltersAndPipe();
+
+            AmbassadorTest();
 
         }
 
@@ -155,14 +159,21 @@ namespace ConsoleIntegrationTests
             Console.WriteLine("Filters and Piping Test\n");
 
             var step1 = new Step1Filter();
+            var step1a = new Step1Filter("Step 1a");
             var step2 = new Step2Filter();
+            var step2a = new Step2Filter("Step 2a");
             var step3 = new Step3Filter();
+            var step3a = new Step1Filter("Step 3a");
+
+            step1.AddFilter(step1a);
+            step2.AddFilter(step2a);
+            step3.AddFilter(step3a);
 
             step1.FilterCompleted += Step1_FilterCompleted;
             step1.FilterExceptionEncountered += Step1_FilterExceptionEncountered;
 
             step1.AddFilter(step2);
-            step2.AddFilter(step3);
+            step1.AddFilter(step3);
 
             step1.Pipe("Test");
 
@@ -180,5 +191,36 @@ namespace ConsoleIntegrationTests
             var cea = e as FilterCompleteEventArgs;
             Console.WriteLine($"{cea.Message}");
         }
+
+        #region Ambassador Test
+
+        private static void AmbassadorTest()
+        {
+            Console.WriteLine("Ambassador Test\n");
+
+            TestingAmbassador amb = new TestingAmbassador();
+            amb.InputCompleted += delegate(object sender, EventArgs args)
+            {
+                var completedArgs = args as AbstractAmbassador<string, int>.InputCompletedEventArgs;
+
+                Console.WriteLine($"Input: {completedArgs.Input}\tResponse: {completedArgs.Response}\n");
+            };
+
+            amb.InputExceptionEncountered += delegate(object sender, EventArgs args)
+            {
+                var excepArgs = args as AbstractAmbassador<string, int>.InputExceptionEventArgs;
+
+                Console.WriteLine($"Input: {excepArgs.Input}\tException: {excepArgs.Exception}\n");
+            };
+
+            amb.AddInputToQueue("This has 22 characters");
+
+            Thread.Sleep(1000);
+
+            WaitForKey();
+
+            amb.Dispose();
+        }
+        #endregion
     }
 }
