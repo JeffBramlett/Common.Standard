@@ -24,8 +24,9 @@ namespace ConsoleIntegrationTests
 
             //TestFiltersAndPipe();
 
-            AmbassadorTest();
+            //AmbassadorTest();
 
+            TestGenericPool();
         }
 
         private static void ToggleTest()
@@ -220,6 +221,58 @@ namespace ConsoleIntegrationTests
             WaitForKey();
 
             amb.Dispose();
+        }
+        #endregion
+
+        #region Pool Test
+
+        private static void TestGenericPool()
+        {
+            Console.WriteLine("Generic Pool Test\n");
+
+            GenericObjectPool<TestPoolItem> testPool = new GenericObjectPool<TestPoolItem>(5);
+            testPool.ItemActivated += TestPool_ItemActivated;
+            testPool.ItemDeactivated += TestPool_ItemDeactivated;
+            testPool.PoolHasNoAvailableItems += TestPool_PoolHasNoAvailableItems;
+
+            List<TestPoolItem> items = new List<TestPoolItem>();
+            for (var i = 0; i < 4; i++)
+            {
+                items.Add(testPool.AcquireItem().Result);
+            }
+
+            WaitForKey();
+
+            items.Add(testPool.AcquireItem().Result);
+
+            WaitForKey();
+
+            var shouldBeNull = testPool.AcquireItem().Result;
+            Console.WriteLine(shouldBeNull == null? "Is Null": "Error: not null");
+
+            WaitForKey();
+
+            for (var i = 0; i < 5; i++)
+            {
+                testPool.ReleaseItem(items[i]).Wait();
+            }
+
+            WaitForKey();
+        }
+
+        private static void TestPool_PoolHasNoAvailableItems(object sender, EventArgs e)
+        {
+            Console.WriteLine("Event: No Available Items");
+        }
+
+        private static void TestPool_ItemDeactivated(object sender, EventArgs e)
+        {
+            Console.WriteLine("Event: Deactivated");
+        }
+
+        private static void TestPool_ItemActivated(object sender, EventArgs e)
+        {
+            Console.WriteLine("Event: Activated");
         }
         #endregion
     }

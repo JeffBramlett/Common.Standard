@@ -5,18 +5,46 @@ using System.Threading.Tasks;
 
 namespace Common.Standard.Generic
 {
+    /// <summary>
+    /// Contract:
+    /// Create helper services that send network requests on behalf of a consumer service or application.
+    /// An ambassador service can be thought of as an out-of-process proxy that is co-located with the
+    /// client.
+    /// </summary>
+    /// <typeparam name="I">the type of the input</typeparam>
+    /// <typeparam name="R">the type of the output</typeparam>
+    /// <remarks>Based on: https://docs.microsoft.com/en-us/azure/architecture/patterns/ambassador</remarks>
     public interface IAmbassador<I, R> : IDisposable
     {
+        /// <summary>
+        /// Add object to the Ambassador work queue
+        /// </summary>
+        /// <param name="input"></param>
         void AddInputToQueue(I input);
 
+        /// <summary>
+        /// Event handling for Exception
+        /// </summary>
         event EventHandler InputExceptionEncountered;
+
+        /// <summary>
+        /// Event handling for a completed object input
+        /// </summary>
         event EventHandler InputCompleted;
     }
 
+    /// <summary>
+    /// Abstraction:
+    /// Create helper services that send network requests on behalf of a consumer service or application.
+    /// An ambassador service can be thought of as an out-of-process proxy that is co-located with the
+    /// client.
+    /// </summary>
+    /// <typeparam name="I">the type of the input</typeparam>
+    /// <typeparam name="R">the type of the output</typeparam>
+    /// <remarks>Based on: https://docs.microsoft.com/en-us/azure/architecture/patterns/ambassador</remarks>
     public abstract class AbstractAmbassador<I, R> : IAmbassador<I, R>
     {
         #region Fields
-
         private GenericSpooler<I> _inputSpooler;
         #endregion
 
@@ -57,7 +85,14 @@ namespace Common.Standard.Generic
         #endregion
 
         #region Events and delegates
+        /// <summary>
+        /// Event handling for Exception
+        /// </summary>
         public event EventHandler InputExceptionEncountered;
+
+        /// <summary>
+        /// Event handling for a completed object input
+        /// </summary>
         public event EventHandler InputCompleted;
         #endregion
 
@@ -71,6 +106,10 @@ namespace Common.Standard.Generic
         #endregion
 
         #region Public
+        /// <summary>
+        /// Add object to the Ambassador work queue
+        /// </summary>
+        /// <param name="input"></param>
         public void AddInputToQueue(I input)
         {
             InputSpooler.AddItem(input);
@@ -80,12 +119,24 @@ namespace Common.Standard.Generic
 
         #region Protected
 
+        /// <summary>
+        /// The execution for each item that is input
+        /// </summary>
+        /// <param name="input">the item input</param>
+        /// <returns></returns>
         protected abstract R ExecuteOnEachInput(I input);
 
+        /// <summary>
+        /// Virtual method to override for disposing managed items
+        /// </summary>
         protected virtual void AdditionalManagedDispose()
         {
 
         }
+
+        /// <summary>
+        /// Virtual method to override for disposing unmanaged items
+        /// </summary>
         protected virtual void AdditionalUnManagedDispose()
         {
 
@@ -153,6 +204,9 @@ namespace Common.Standard.Generic
 
         #region Public inner classes
 
+        /// <summary>
+        /// Event Args class for input exceptions
+        /// </summary>
         public class InputExceptionEventArgs : EventArgs
         {
             public I Input { get; set; }
@@ -165,6 +219,9 @@ namespace Common.Standard.Generic
             }
         }
 
+        /// <summary>
+        /// Event args class for input completion
+        /// </summary>
         public class InputCompletedEventArgs : EventArgs
         {
             public I Input { get; set; }

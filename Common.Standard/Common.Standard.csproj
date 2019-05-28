@@ -5,7 +5,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Jeffrey Bramlett</Authors>
     <Company>Blue Jay Web Services</Company>
-    <Description>.Net Standard library of extensions and generics to be used in any application. Includes: Generic implementations for Ambassador, CircuitBreaker, Pipes and Filter, Spooling, MessageBus and Service Loader.  Feature Toggles implementation and collection extensions are also included.
+    <Description>.Net Standard library of extensions and generics to be used in any application. Includes: Generic implementations for Ambassador, CircuitBreaker, Pipes and Filter, Ambassador, Pool, Spooling, MessageBus and Service Loader.  Feature Toggles implementation and collection extensions are also included.
 </Description>
     <Copyright>Jeffrey Bramlett @December 2018</Copyright>
     <PackageLicenseUrl>not applicable</PackageLicenseUrl>
@@ -13,8 +13,10 @@
     <RepositoryUrl>https://github.com/JeffBramlett/Common.Standard</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>common,generics,extensions.toggles,serviceloader,messagebus,pipes and filters,circuitbreaker,ambassador</PackageTags>
-    <PackageReleaseNotes>Added Generic CircuitBreaker
-Added Generic PipesAndFilter
+    <PackageReleaseNotes>Added Generic Pool
+Added Generic Ambassador
+- Added Generic CircuitBreaker
+ Added Generic PipesAndFilter
 - Updated Generic Spooler to use events
 - Added Asynchronous Text Writer
 - Added Toggle Repository (default as Json)
@@ -26,9 +28,9 @@ Added Generic PipesAndFilter
 * added List&lt;/T&gt; extension "TryFindValue(predicate, out T found): Try to find using a predicate from a list.  (does null check and does not throw exception)
 * added List&lt;T&gt; extension "TryFindAll for using one or more predicates to find items in a list (does null check and does not throw exception)
 * - Changed ServiceLoader to recursively load from the starting path</PackageReleaseNotes>
-    <Version>1.0.12</Version>
-    <AssemblyVersion>1.0.12.0</AssemblyVersion>
-    <FileVersion>1.0.12.0</FileVersion>
+    <Version>1.0.13</Version>
+    <AssemblyVersion>1.0.13.0</AssemblyVersion>
+    <FileVersion>1.0.13.0</FileVersion>
     <PackageIconUrl>https://bluejaywebsvc.com/images/bluejaylogo.png</PackageIconUrl>
   </PropertyGroup>
 
