@@ -5,26 +5,67 @@ using System.Text;
 
 namespace Common.Standard.Generic
 {
+    /// <summary>
+    /// Contract for Pipes and Filters design pattern
+    /// </summary>
+    /// <typeparam name="T">the type for pattern execution</typeparam>
     public interface IFilterAndPipe<T>: IComparable<IFilterAndPipe<T>>, IComparer<IFilterAndPipe<T>>, IDisposable
     {
+        /// <summary>
+        /// The logical name of this Filter
+        /// </summary>
         string Name { get; }
 
+        /// <summary>
+        /// The ordinal sort order
+        /// </summary>
         int SortOrder { get; }
 
+        /// <summary>
+        /// Use Parallel execution (no waiting for the filter action to complete)
+        /// </summary>
         bool ParallelExecution { get; set; }
 
+        /// <summary>
+        /// Return true to continue piping to this filter, false halts this filter from piping
+        /// </summary>
+        /// <param name="item">the item to filter and pipe</param>
+        /// <returns>true or false</returns>
         bool CanFilterItem(T item);
 
+        /// <summary>
+        /// Pipe to the next filter(s)
+        /// </summary>
+        /// <param name="item">the item to filter and pipe</param>
         void Pipe(T item);
 
+        /// <summary>
+        /// The filter action to take on each item
+        /// </summary>
+        /// <param name="item">the item to filter</param>
         void Filter(T item);
 
+        /// <summary>
+        /// Add a sub-filter to this filter
+        /// </summary>
+        /// <param name="nextFilter">the next filter to add</param>
         void AddFilter(IFilterAndPipe<T> nextFilter);
 
+        /// <summary>
+        /// Event handling for when and exception is encountered
+        /// </summary>
         event EventHandler FilterExceptionEncountered;
+
+        /// <summary>
+        /// The filter has completed filtering and piping
+        /// </summary>
         event EventHandler FilterCompleted;
     }
 
+    /// <summary>
+    /// Abstraction class of a Filter and Pipe 
+    /// </summary>
+    /// <typeparam name="T">the type to filter and pipe</typeparam>
     public abstract class AbstractFilterAndPipe<T> : IFilterAndPipe<T>
     {
         #region Fields
@@ -35,19 +76,27 @@ namespace Common.Standard.Generic
         #endregion
 
         #region Properties
-
+        /// <summary>
+        /// The logical name of this Filter
+        /// </summary>
         public string Name
         {
             get { return _name; }
             private set { _name = value; }
         }
 
+        /// <summary>
+        /// The ordinal sort order
+        /// </summary>
         public int SortOrder
         {
             get { return _sortOrder; }
             set { _sortOrder = value; }
         }
 
+        /// <summary>
+        /// Use Parallel execution (no waiting for the filter action to complete)
+        /// </summary>
         public bool ParallelExecution
         {
             get { return _parallelExecution; }
@@ -69,12 +118,23 @@ namespace Common.Standard.Generic
         #endregion
 
         #region Events and delegates
+        /// <summary>
+        /// Event handling for when and exception is encountered
+        /// </summary>
         public event EventHandler FilterExceptionEncountered;
+
+        /// <summary>
+        /// The filter has completed filtering and piping
+        /// </summary>
         public event EventHandler FilterCompleted;
         #endregion
 
         #region Ctors and Dtors
-
+        /// <summary>
+        /// Default Ctor
+        /// </summary>
+        /// <param name="name">Logical name of Filter</param>
+        /// <param name="parallelExecution">use parallel execution (default = false)</param>
         public AbstractFilterAndPipe(string name, bool parallelExecution = false)
         {
             Name = name;
@@ -83,6 +143,10 @@ namespace Common.Standard.Generic
         #endregion
 
         #region Publics
+        /// <summary>
+        /// Add a sub-filter to this filter
+        /// </summary>
+        /// <param name="nextFilter">the next filter to add</param>
         public void AddFilter(IFilterAndPipe<T> nextFilter)
         {
             nextFilter.FilterCompleted += NextFilter_FilterCompleted;
@@ -92,20 +156,23 @@ namespace Common.Standard.Generic
             FilterList.Sort();
         }
 
-        private void NextFilter_FilterExceptionEncountered(object sender, EventArgs e)
-        {
-            FilterExceptionEncountered?.Invoke(this, e);
-        }
-
-        private void NextFilter_FilterCompleted(object sender, EventArgs e)
-        {
-            FilterCompleted?.Invoke(this, e);
-        }
-
+        /// <summary>
+        /// Return true to continue piping to this filter, false halts this filter from piping
+        /// </summary>
+        /// <param name="item">the item to filter and pipe</param>
+        /// <returns>true or false</returns>
         public abstract bool CanFilterItem(T item);
 
+        /// <summary>
+        /// The filter action to take on each item
+        /// </summary>
+        /// <param name="item">the item to filter</param>
         public abstract void Filter(T item);
 
+        /// <summary>
+        /// Pipe to the next filter(s)
+        /// </summary>
+        /// <param name="item">the item to filter and pipe</param>
         public void Pipe(T item)
         {
             if (ParallelExecution)
@@ -131,11 +198,22 @@ namespace Common.Standard.Generic
             FilterCompleted?.Invoke(this, eventArgs);
         }
 
+        /// <summary>
+        /// The difference between this.SortOrder and the other.SortOrder
+        /// </summary>
+        /// <param name="other">the other filter</param>
+        /// <returns>The difference between this.SortOrder and the other.SortOrder</returns>
         public int CompareTo(IFilterAndPipe<T> other)
         {
             return SortOrder - other.SortOrder;
         }
 
+        /// <summary>
+        /// Compare two filters and return difference is SortOrder
+        /// </summary>
+        /// <param name="x">filter</param>
+        /// <param name="y">another filter</param>
+        /// <returns></returns>
         public int Compare(IFilterAndPipe<T> x, IFilterAndPipe<T> y)
         {
             return x.CompareTo(y);
@@ -143,16 +221,21 @@ namespace Common.Standard.Generic
         #endregion
 
         #region Protected virtuals
-
+        /// <summary>
+        /// Override this method to add disposal of managed objects
+        /// </summary>
         protected virtual void AdditionalManagedDispose()
         {
 
         }
+
+        /// <summary>
+        /// Override this method to add disposal of unmanaged objects
+        /// </summary>
         protected virtual void AdditionalUnManagedDispose()
         {
 
         }
-
         #endregion
 
         #region Privates
@@ -179,7 +262,8 @@ namespace Common.Standard.Generic
         {
             try
             {
-                filter.Pipe(item);
+                if(filter.CanFilterItem(item))
+                    filter.Pipe(item);
             }
             catch (Exception e)
             {
@@ -189,6 +273,17 @@ namespace Common.Standard.Generic
         }
         #endregion
 
+        #region Event handling
+        private void NextFilter_FilterExceptionEncountered(object sender, EventArgs e)
+        {
+            FilterExceptionEncountered?.Invoke(this, e);
+        }
+
+        private void NextFilter_FilterCompleted(object sender, EventArgs e)
+        {
+            FilterCompleted?.Invoke(this, e);
+        }
+        #endregion
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
