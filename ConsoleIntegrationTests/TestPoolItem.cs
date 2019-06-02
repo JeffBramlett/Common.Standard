@@ -19,7 +19,7 @@ namespace ConsoleIntegrationTests
 
         public void Deactivate()
         {
-            Console.WriteLine("Item Activated");
+            Console.WriteLine("Item Deactivated");
             IsActive = false;
         }
 

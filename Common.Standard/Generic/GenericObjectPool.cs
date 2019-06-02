@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Common.Standard.Generic
 {
     /// <summary>
+    /// Contract:
     /// Performance can be sometimes the key issue during the software development and the
     /// object creation(class instantiation) is a costly step. The Object Pool pattern
     /// offers a mechanism to reuse objects that are expensive to create. 
@@ -46,9 +47,21 @@ namespace Common.Standard.Generic
         event EventHandler ItemDeactivated;
     }
 
+    /// <summary>
+    /// Abstraction:
+    /// Performance can be sometimes the key issue during the software development and the
+    /// object creation(class instantiation) is a costly step. The Object Pool pattern
+    /// offers a mechanism to reuse objects that are expensive to create. 
+    /// </summary>
+    /// <typeparam name="T">the type of item for the Pool</typeparam>
+    /// <remarks>
+    /// Based on: https://www.oodesign.com/object-pool-pattern.html
+    /// </remarks>
     public class GenericObjectPool<T>: IGenericObjectPool<T> where T: class, IPoolItem, new()
     {
         #region Fields
+
+        private bool _isInitialized = false;
         private T[] _itemPool;
         private readonly int _poolSize = 10;
         #endregion
@@ -59,14 +72,6 @@ namespace Common.Standard.Generic
         {
             get
             {
-                if (_itemPool == null)
-                {
-                    _itemPool = new T[PoolSize];
-                    for (var i = 0; i < PoolSize; i++)
-                    {
-                        _itemPool[i] = new T();
-                    }
-                }
                 return _itemPool;
             }
         }
@@ -106,6 +111,8 @@ namespace Common.Standard.Generic
                 throw new ArgumentOutOfRangeException("poolSize size must be greater than 0");
 
             _poolSize = poolSize;
+
+            Initialize().Wait();
         }
 
         ~GenericObjectPool()
@@ -179,6 +186,28 @@ namespace Common.Standard.Generic
         #endregion
 
         #region Privates
+
+        private async Task Initialize()
+        {
+            if (!_isInitialized)
+            {
+                await Task.Run(() =>
+                {
+                    if (_itemPool == null)
+                    {
+                        _itemPool = new T[PoolSize];
+                        for (var i = 0; i < PoolSize; i++)
+                        {
+                            _itemPool[i] = new T();
+                        }
+                    }
+                    _isInitialized = true;
+                });
+            }
+        }
+        #endregion
+
+        #region Event Handlers
 
         private void RaiseItemActivated(T item)
         {
