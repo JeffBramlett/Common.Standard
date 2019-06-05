@@ -142,6 +142,21 @@ namespace Common.Standard.Generic
         }
         #endregion
 
+        #region Abstracts
+        /// <summary>
+        /// Return true to continue piping to this filter, false halts this filter from piping
+        /// </summary>
+        /// <param name="item">the item to filter and pipe</param>
+        /// <returns>true or false</returns>
+        public abstract bool CanFilterItem(T item);
+
+        /// <summary>
+        /// The filter action to take on each item
+        /// </summary>
+        /// <param name="item">the item to filter</param>
+        public abstract void Filter(T item);
+        #endregion
+
         #region Publics
         /// <summary>
         /// Add a sub-filter to this filter
@@ -155,19 +170,6 @@ namespace Common.Standard.Generic
             FilterList.Add(nextFilter);
             FilterList.Sort();
         }
-
-        /// <summary>
-        /// Return true to continue piping to this filter, false halts this filter from piping
-        /// </summary>
-        /// <param name="item">the item to filter and pipe</param>
-        /// <returns>true or false</returns>
-        public abstract bool CanFilterItem(T item);
-
-        /// <summary>
-        /// The filter action to take on each item
-        /// </summary>
-        /// <param name="item">the item to filter</param>
-        public abstract void Filter(T item);
 
         /// <summary>
         /// Pipe to the next filter(s)

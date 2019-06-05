@@ -81,9 +81,10 @@ namespace ConsoleIntegrationTests
             AsyncTextWriter.Instance.Dispose();
         }
 
-        private static void WaitForKey()
+        private static void WaitForKey(string message = "")
         {
-            Console.WriteLine("Press any key to continue");
+            string msg = string.IsNullOrEmpty(message) ? "Press any key to continue" : message;
+            Console.WriteLine(msg);
             Console.ReadKey();
             Console.Write("\b \b");
 
@@ -228,51 +229,44 @@ namespace ConsoleIntegrationTests
 
         private static void TestGenericPool()
         {
-            Console.WriteLine("Generic Pool Test\n");
+            ConsoleWriter.Instance.WriteEmphasis("Generic Pool Test\n");
 
-            GenericObjectPool<TestPoolItem> testPool = new GenericObjectPool<TestPoolItem>(5);
-            testPool.ItemActivated += TestPool_ItemActivated;
-            testPool.ItemDeactivated += TestPool_ItemDeactivated;
-            testPool.PoolHasNoAvailableItems += TestPool_PoolHasNoAvailableItems;
+            IGenericObjectPool<TestPoolItem> testPool = new GenericObjectPool<TestPoolItem>(10);
 
             List<TestPoolItem> items = new List<TestPoolItem>();
-            for (var i = 0; i < 4; i++)
+            for (var i = 0; i < 5; i++)
             {
                 items.Add(testPool.AcquireItem().Result);
             }
+            ConsoleWriter.Instance.WriteInformation($"Count: {testPool.Count}\tSize: {testPool.Size}");
 
-            WaitForKey();
+            ConsoleWriter.Instance.WriteEmphasis("Press any key to acquire one more", true);
 
-            items.Add(testPool.AcquireItem().Result);
+            var itemAdded = testPool.AcquireItem().Result;
+            items.Add(itemAdded);
+            ConsoleWriter.Instance.WriteInformation($"Count: {testPool.Count}\tSize: {testPool.Size}");
 
-            WaitForKey();
+            ConsoleWriter.Instance.WriteEmphasis("Press any key to deactivate last added", true);
+            itemAdded.Deactivate();
 
-            var shouldBeNull = testPool.AcquireItem().Result;
-            Console.WriteLine(shouldBeNull == null? "Is Null": "Error: not null");
+            ConsoleWriter.Instance.WriteInformation($"Count: {testPool.Count}\tSize: {testPool.Size}");
 
-            WaitForKey();
+            ConsoleWriter.Instance.WriteEmphasis("Press any key to release all", true);
 
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < items.Count; i++)
             {
                 testPool.ReleaseItem(items[i]).Wait();
             }
 
-            WaitForKey();
-        }
+            testPool.ContractItemPool();
+            Thread.Sleep(10);
 
-        private static void TestPool_PoolHasNoAvailableItems(object sender, EventArgs e)
-        {
-            Console.WriteLine("Event: No Available Items");
-        }
+            ConsoleWriter.Instance.WriteInformation($"Count: {testPool.Count}\tSize: {testPool.Size}");
 
-        private static void TestPool_ItemDeactivated(object sender, EventArgs e)
-        {
-            Console.WriteLine("Event: Deactivated");
-        }
+            ConsoleWriter.Instance.WriteEmphasis("Press any key to quit", true);
 
-        private static void TestPool_ItemActivated(object sender, EventArgs e)
-        {
-            Console.WriteLine("Event: Activated");
+            testPool.Dispose();
+            ConsoleWriter.Instance.Dispose();
         }
         #endregion
     }

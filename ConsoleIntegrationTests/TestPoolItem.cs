@@ -11,16 +11,22 @@ namespace ConsoleIntegrationTests
     {
         public bool IsActive { get; set; }
 
+        public event EventHandler ItemIsDeactivated;
+
+        public TestPoolItem()
+        {
+            IsActive = false;
+        }
+
         public void Activate()
         {
-            Console.WriteLine("Item Activated");
             IsActive = true;
         }
 
         public void Deactivate()
         {
-            Console.WriteLine("Item Deactivated");
             IsActive = false;
+            ItemIsDeactivated?.Invoke(this, EventArgs.Empty);
         }
 
         public void Dispose()

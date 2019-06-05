@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Common.Standard.Generic
@@ -32,19 +33,20 @@ namespace Common.Standard.Generic
         Task ReleaseItem(T item);
 
         /// <summary>
-        /// Event handler raised when all the available items in the pool are taken
+        /// Contract the Pool to the original size or the size of active items
         /// </summary>
-        event EventHandler PoolHasNoAvailableItems;
+        /// <returns>void</returns>
+        Task ContractItemPool();
 
         /// <summary>
-        /// Event handler raised when an Item is acquired and activated
+        /// Return the count of active items
         /// </summary>
-        event EventHandler ItemActivated;
+        int Count { get; }
 
         /// <summary>
-        /// Event handler raised when and Item is released back to the Pool and deactivated
+        /// Return the allocated size of the pool
         /// </summary>
-        event EventHandler ItemDeactivated;
+        int Size { get; }
     }
 
     /// <summary>
@@ -80,24 +82,31 @@ namespace Common.Standard.Generic
         {
             get { return _poolSize; }
         }
+
+        /// <summary>
+        /// Return the count of active items
+        /// </summary>
+        public int Count
+        {
+            get
+            {
+                var stilActive = ItemPool.Where(i => i.IsActive).Count();
+                return stilActive;
+            }
+        }
+
+        /// <summary>
+        /// Return the allocated size of the pool
+        /// </summary>
+        public int Size
+        {
+            get { return ItemPool.Length; }
+        }
+
         #endregion
 
         #region Event and delegates
 
-        /// <summary>
-        /// Event handler raised when all the available items in the pool are taken
-        /// </summary>
-        public event EventHandler PoolHasNoAvailableItems;
-
-        /// <summary>
-        /// Event handler raised when an Item is acquired and activated
-        /// </summary>
-        public event EventHandler ItemActivated;
-
-        /// <summary>
-        /// Event handler raised when and Item is released back to the Pool and deactivated
-        /// </summary>
-        public event EventHandler ItemDeactivated;
         #endregion
 
         #region Ctors and Dtors
@@ -137,16 +146,15 @@ namespace Common.Standard.Generic
                 if (openItems != null && openItems.Count() > 0)
                 {
                     firstFound = openItems.ElementAt(0);
-                    firstFound.Activate();
-                    RaiseItemActivated(firstFound);
                 }
                 else
                 {
-                    PoolHasNoAvailableItemsEventArgs args = new PoolHasNoAvailableItemsEventArgs();
-                    PoolHasNoAvailableItems?.Invoke(this, args);
+                    var ndx = ExpandPool();
+                    firstFound = _itemPool[ndx];
                 }
-            });
 
+                firstFound.Activate();
+            });
             return firstFound;
         }
 
@@ -160,8 +168,18 @@ namespace Common.Standard.Generic
             await Task.Run(() =>
             {
                 var found = ItemPool.First(i => i.Equals(item));
-                found?.Deactivate();
-                RaiseItemDeactivated(item);
+                if (found.IsActive)
+                {
+                    found?.Deactivate();
+                }
+            });
+        }
+
+        public async Task ContractItemPool()
+        {
+            await Task.Run(() =>
+            {
+                ContractPool();
             });
         }
         #endregion
@@ -187,39 +205,91 @@ namespace Common.Standard.Generic
 
         #region Privates
 
+        private void ItemIsDeactivated(object itemAsObject, EventArgs args)
+        {
+            if (itemAsObject is IPoolItem)
+            {
+                var item = (T) itemAsObject;
+                item.Deactivate();
+            }
+        }
+
         private async Task Initialize()
         {
             if (!_isInitialized)
             {
                 await Task.Run(() =>
                 {
-                    if (_itemPool == null)
-                    {
-                        _itemPool = new T[PoolSize];
-                        for (var i = 0; i < PoolSize; i++)
-                        {
-                            _itemPool[i] = new T();
-                        }
-                    }
+                    InitPool();
+
                     _isInitialized = true;
                 });
+            }
+        }
+
+        private int ExpandPool()
+        {
+            int ndx = _itemPool.Length;
+
+            List<T> itemList = new List<T>(_itemPool);
+
+
+            for (var i = 0; i < PoolSize; i++)
+            {
+                var newItem = new T();
+
+                itemList.Add(newItem);
+            }
+
+            _itemPool = itemList.ToArray();
+
+            return ndx;
+        }
+
+
+        private void ContractPool()
+        {
+            if (_itemPool == null)
+                return;
+
+            var stillActiveItems = _itemPool.Where(i => i.IsActive);
+
+            List<T> remainingList = new List<T>(stillActiveItems);
+            foreach (var stillActiveItem in stillActiveItems)
+            {
+                remainingList.Add(stillActiveItem);
+            }
+
+            if (remainingList.Count <= PoolSize)
+            {
+                _itemPool = null;
+
+                InitPool();
+
+                for (var i = 0; i < remainingList.Count; i++)
+                {
+                    _itemPool[i] = remainingList[i];
+                }
+            }
+            else
+            {
+                _itemPool = remainingList.ToArray();
+            }
+        }
+
+        private void InitPool()
+        {
+            _itemPool = new T[PoolSize];
+
+            for (var i = 0; i < PoolSize; i++)
+            {
+                _itemPool[i] = new T();
             }
         }
         #endregion
 
         #region Event Handlers
 
-        private void RaiseItemActivated(T item)
-        {
-            PoolItemActionEventArgs<T> paction = new PoolItemActionEventArgs<T>(item, PoolItemActionEventArgs<T>.PoolItemActions.Activated);
-            ItemActivated?.Invoke(this, paction);
-        }
-
-        private void RaiseItemDeactivated(T item)
-        {
-            PoolItemActionEventArgs<T> paction = new PoolItemActionEventArgs<T>(item, PoolItemActionEventArgs<T>.PoolItemActions.Deactivated);
-            ItemDeactivated?.Invoke(this, paction);
-        }
         #endregion
 
         #region IDisposable Support

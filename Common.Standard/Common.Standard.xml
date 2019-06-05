@@ -1,0 +1,1282 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Common.Standard</name>
+    </assembly>
+    <members>
+        <member name="T:Common.Standard.IAsyncTextWriter">
+            <summary>
+            AsyncTextWriter implementation
+            </summary>
+        </member>
+        <member name="M:Common.Standard.IAsyncTextWriter.Init(System.String)">
+            <summary>
+            Initialize the writer to a filename
+            </summary>
+            <param name="filename">the name of the file to contain the contents</param>
+        </member>
+        <member name="M:Common.Standard.IAsyncTextWriter.Write(System.String,System.Object[])">
+            <summary>
+            Write content to the file without a CR/LF
+            </summary>
+            <param name="content">the content to write</param>
+            <param name="formatArgs">args for string.format</param>
+        </member>
+        <member name="M:Common.Standard.IAsyncTextWriter.WriteLine(System.String,System.Object[])">
+            <summary>
+            Write a line of text to the file
+            </summary>
+            <param name="contentLine">the line of text</param>
+            <param name="formatArgs">args for string.format</param>
+        </member>
+        <member name="T:Common.Standard.AsyncTextWriter">
+            <summary>
+            Executing class to write to text file asynchonously.
+            Use the singleton (Instance property) or instantiate and use with Dependency Injection
+            </summary>
+        </member>
+        <member name="P:Common.Standard.AsyncTextWriter.Instance">
+            <summary>
+            Singleton (thread-safe) instance of the writer
+            </summary>
+        </member>
+        <member name="M:Common.Standard.AsyncTextWriter.#ctor">
+            <summary>
+            Required parameterless Ctor for lazy instance
+            </summary>
+        </member>
+        <member name="M:Common.Standard.AsyncTextWriter.Init(System.String)">
+            <summary>
+            Initialize the writer to a filename
+            </summary>
+            <param name="filename">the name of the file to contain the contents</param>
+        </member>
+        <member name="M:Common.Standard.AsyncTextWriter.Write(System.String,System.Object[])">
+            <summary>
+            Write content to the file without a CR/LF
+            </summary>
+            <param name="content">the content to write</param>
+            <param name="formatArgs">args for string.format</param>
+        </member>
+        <member name="M:Common.Standard.AsyncTextWriter.WriteLine(System.String,System.Object[])">
+            <summary>
+            Write a line of text to the file
+            </summary>
+            <param name="contentLine">the line of text</param>
+            <param name="formatArgs">args for string.format</param>
+        </member>
+        <member name="T:Common.Standard.Extensions.ListExtensions">
+            <summary>
+            IList Extensions
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Extensions.ListExtensions.TryFindItem``1(System.Collections.Generic.List{``0},System.Predicate{``0},``0@)">
+            <summary>
+            Try to find using a predicate from a list (reference types only).  (does null check and does not throw exception)
+            </summary>
+            <typeparam name="T">the type of the list</typeparam>
+            <param name="list">the list</param>
+            <param name="predicate">the predicate to use in find</param>
+            <param name="found">the found item (null if not found)</param>
+            <returns>true if found and false otherwise</returns>
+        </member>
+        <member name="M:Common.Standard.Extensions.ListExtensions.TryFindValue``1(System.Collections.Generic.List{``0},System.Predicate{``0},``0@)">
+            <summary>
+            Try to find using a predicate from a list (value types only).  (does null check and does not throw exception)
+            </summary>
+            <typeparam name="T">the type of the list</typeparam>
+            <param name="list">the list</param>
+            <param name="predicate">the predicate to use in find</param>
+            <param name="found">the found item (null if not found)</param>
+            <returns>true if found and false otherwise</returns>
+        </member>
+        <member name="M:Common.Standard.Extensions.ListExtensions.TryFindAll``1(System.Collections.Generic.List{``0},System.Collections.Generic.IList{``0}@,System.Predicate{``0}[])">
+            <summary>
+            Find in a list matches to one or more predicates
+            </summary>
+            <typeparam name="T">the type of the list</typeparam>
+            <param name="list">the list</param>
+            <param name="foundList">the found items (may be empty list)</param>
+            <param name="predicates">the one or more predicates</param>
+            <returns>true if more than one item was found</returns>
+        </member>
+        <member name="M:Common.Standard.Extensions.ListExtensions.ToCommaDelimited``1(System.Collections.Generic.List{``0},System.Boolean)">
+            <summary>
+            Return a comma-delimited row for this list
+            </summary>
+            <typeparam name="T">the type of the list</typeparam>
+            <param name="collection">the list collection to return as comma-delimited</param>
+            <param name="useQuotes">True for quote comma-delimited</param>
+            <returns></returns>
+        </member>
+        <member name="M:Common.Standard.Extensions.ListExtensions.ApplyAction``1(System.Collections.Generic.IList{``0},System.Action{``0},System.Int32)">
+            <summary>
+            Task an Action (delegate) on a span (iterationSize) using parallel execution (Task)
+            </summary>
+            <typeparam name="T">the type to use in the Action</typeparam>
+            <param name="collection">the collection of items of type</param>
+            <param name="actionToTakeOnEach">the action (delegate) to apply to each item</param>
+            <param name="throttleSize">the size of the parallel actions</param>
+            <returns>true when all is complete</returns>
+        </member>
+        <member name="M:Common.Standard.Extensions.ListExtensions.ApplyFunction``2(System.Collections.Generic.IList{``0},System.Func{``0,``1},System.Int32)">
+            <summary>
+            Apply a Func to each item in the collection async by throttlesize
+            </summary>
+            <typeparam name="I">the input collection type</typeparam>
+            <typeparam name="R">the output collection type</typeparam>
+            <param name="collection">the input collection</param>
+            <param name="funcToTakeOnEach">the function to apply to each I in the collection</param>
+            <param name="throttleSize">the size of the async throttle</param>
+            <returns></returns>
+        </member>
+        <member name="M:Common.Standard.Extensions.ListExtensions.ExecuteForFirstReturn``1(System.Collections.Generic.IEnumerable{System.Func{``0}})">
+            <summary>
+            Execute the functions in parallel and return the first one that succeeds (not null return)
+            </summary>
+            <typeparam name="T">the type of the return</typeparam>
+            <param name="funcArray">the array of function to execute in parallel</param>
+            <returns>the default of T or the first value</returns>
+        </member>
+        <member name="T:Common.Standard.Extensions.ObjectExtensions">
+            <summary>
+            General collection of extension methods useful when working with
+            any objects.
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Extensions.ObjectExtensions.GetAssemblyVersion(System.Object)">
+            <summary>
+            Returns version of the assembly where the object class is defined
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Extensions.ObjectExtensions.CastAs``1(System.Object,``0@)">
+            <summary>
+            Do implicit cast and return if null or not
+            </summary>
+            <typeparam name="ToType">the type to implicitly cast to</typeparam>
+            <param name="inObject">the class to extend</param>
+            <param name="output">the resulting output (null if unsuccessful)</param>
+            <returns>true if implicit cast is successful, false otherwise</returns>
+        </member>
+        <member name="M:Common.Standard.Extensions.ObjectExtensions.ThrowIfNull(System.Object,System.String)">
+            <summary>
+            Throw ArmumentNullException if the object is null
+            </summary>
+            <param name="obj">the object for the null check</param>
+            <param name="argName">the argument name</param>
+        </member>
+        <member name="M:Common.Standard.Extensions.ObjectExtensions.ThrowIfNull(System.Object)">
+            <summary>
+            Throw ArgumentNullException if the object is null
+            </summary>
+            <param name="obj">the object to check for null</param>
+        </member>
+        <member name="M:Common.Standard.Extensions.ObjectExtensions.ToJson(System.Object,Newtonsoft.Json.JsonSerializerSettings)">
+            <summary>
+            Get the json serialization of this object
+            </summary>
+            <param name="obj">the object itself</param>
+            <param name="settings">(optional) serialization settings</param>
+            <returns>the object serialized to Json</returns>
+        </member>
+        <member name="M:Common.Standard.Extensions.ObjectExtensions.ToJson(System.Object,Newtonsoft.Json.JsonConverter[])">
+            <summary>
+            Get the json serialization of this object
+            </summary>
+            <param name="obj">the object itself</param>
+            <param name="converters">Collection of converters</param>
+            <returns>the object serialized to Json</returns>
+        </member>
+        <member name="M:Common.Standard.Extensions.ObjectExtensions.ToXml(System.Object)">
+            <summary>
+            Get the xml serialization of this object
+            </summary>
+            <param name="obj">the object itself</param>
+            <returns>the object serialized to Xml</returns>
+        </member>
+        <member name="T:Common.Standard.Generic.IAmbassador`2">
+            <summary>
+            Contract:
+            Create helper services that send network requests on behalf of a consumer service or application.
+            An ambassador service can be thought of as an out-of-process proxy that is co-located with the
+            client.
+            </summary>
+            <typeparam name="I">the type of the input</typeparam>
+            <typeparam name="R">the type of the output</typeparam>
+            <remarks>Based on: https://docs.microsoft.com/en-us/azure/architecture/patterns/ambassador</remarks>
+        </member>
+        <member name="M:Common.Standard.Generic.IAmbassador`2.AddInputToQueue(`0)">
+            <summary>
+            Add object to the Ambassador work queue
+            </summary>
+            <param name="input"></param>
+        </member>
+        <member name="E:Common.Standard.Generic.IAmbassador`2.InputExceptionEncountered">
+            <summary>
+            Event handling for Exception
+            </summary>
+        </member>
+        <member name="E:Common.Standard.Generic.IAmbassador`2.InputCompleted">
+            <summary>
+            Event handling for a completed object input
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.AbstractAmbassador`2">
+            <summary>
+            Abstraction:
+            Create helper services that send network requests on behalf of a consumer service or application.
+            An ambassador service can be thought of as an out-of-process proxy that is co-located with the
+            client.
+            </summary>
+            <typeparam name="I">the type of the input</typeparam>
+            <typeparam name="R">the type of the output</typeparam>
+            <remarks>Based on: https://docs.microsoft.com/en-us/azure/architecture/patterns/ambassador</remarks>
+        </member>
+        <member name="E:Common.Standard.Generic.AbstractAmbassador`2.InputExceptionEncountered">
+            <summary>
+            Event handling for Exception
+            </summary>
+        </member>
+        <member name="E:Common.Standard.Generic.AbstractAmbassador`2.InputCompleted">
+            <summary>
+            Event handling for a completed object input
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractAmbassador`2.AddInputToQueue(`0)">
+            <summary>
+            Add object to the Ambassador work queue
+            </summary>
+            <param name="input"></param>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractAmbassador`2.ExecuteOnEachInput(`0)">
+            <summary>
+            The execution for each item that is input
+            </summary>
+            <param name="input">the item input</param>
+            <returns></returns>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractAmbassador`2.AdditionalManagedDispose">
+            <summary>
+            Virtual method to override for disposing managed items
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractAmbassador`2.AdditionalUnManagedDispose">
+            <summary>
+            Virtual method to override for disposing unmanaged items
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractAmbassador`2.Dispose">
+            <summary>
+            Dispose of resources
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.AbstractAmbassador`2.InputExceptionEventArgs">
+            <summary>
+            Event Args class for input exceptions
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.AbstractAmbassador`2.InputCompletedEventArgs">
+            <summary>
+            Event args class for input completion
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.CircuitBreakerStatuses">
+            <summary>
+            Status of Circuit Breaker
+            </summary>
+        </member>
+        <member name="F:Common.Standard.Generic.CircuitBreakerStatuses.Closed">
+            <summary>
+            Breaker is closed (ready for execution)
+            </summary>
+        </member>
+        <member name="F:Common.Standard.Generic.CircuitBreakerStatuses.Open">
+            <summary>
+            Breaker is open (not ready for execution)
+            </summary>
+        </member>
+        <member name="F:Common.Standard.Generic.CircuitBreakerStatuses.HalfOpen">
+            <summary>
+            In recovery (Reset) may fail
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.ICircuitBreaker`1">
+            <summary>
+            Contract for CircuitBreaker 
+            </summary>
+            <typeparam name="T">the input type for the circuit breaker</typeparam>
+        </member>
+        <member name="P:Common.Standard.Generic.ICircuitBreaker`1.Threshold">
+            <summary>
+            The threshold that when reached open the circuit breaker
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.ICircuitBreaker`1.RetryTimeSpan">
+            <summary>
+            The timespan between retries
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.ICircuitBreaker`1.LastAttempt">
+            <summary>
+            The DateTimeOffset of the last attempt
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.ICircuitBreaker`1.Status">
+            <summary>
+            The status of this CircuitBreaker
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.ICircuitBreaker`1.Execute``1(`0,System.Func{`0,``0})">
+            <summary>
+            Execute the CircuitBreaker function
+            </summary>
+            <typeparam name="R">the return type</typeparam>
+            <param name="input">the input to execute on</param>
+            <param name="executeDelegate">the delegate to use in Circuit break</param>
+            <returns></returns>
+        </member>
+        <member name="M:Common.Standard.Generic.ICircuitBreaker`1.Reset">
+            <summary>
+            Reset the CircuitBreaker (sets status to HalfOpen)
+            </summary>
+            <returns>void</returns>
+        </member>
+        <member name="E:Common.Standard.Generic.ICircuitBreaker`1.BreakerStatusChange">
+            <summary>
+            Eventhandler for status change in this CircuitBreaker
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.AbstractCircuitBreaker`1">
+            <summary>
+            Abstract Circuit Breaker
+            </summary>
+            <typeparam name="T">the input type for the circuit breaker</typeparam>
+        </member>
+        <member name="P:Common.Standard.Generic.AbstractCircuitBreaker`1.Threshold">
+            <summary>
+            The threshold that when reached open the circuit breaker
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.AbstractCircuitBreaker`1.RetryTimeSpan">
+            <summary>
+            The timespan between retries
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.AbstractCircuitBreaker`1.LastAttempt">
+            <summary>
+            The DateTimeOffset of the last attempt
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.AbstractCircuitBreaker`1.Status">
+            <summary>
+            The status of this CircuitBreaker
+            </summary>
+        </member>
+        <member name="E:Common.Standard.Generic.AbstractCircuitBreaker`1.BreakerStatusChange">
+            <summary>
+            Eventhandler for status change in this CircuitBreaker
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractCircuitBreaker`1.#ctor">
+            <summary>
+            Default Ctor
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractCircuitBreaker`1.Finalize">
+            <summary>
+            Finalizer
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractCircuitBreaker`1.Execute``1(`0,System.Func{`0,``0})">
+            <summary>
+            Execute the CircuitBreaker function
+            </summary>
+            <typeparam name="R">the return type</typeparam>
+            <param name="input">the input to execute on</param>
+            <param name="executeDelegate">the delegate to use in Circuit break</param>
+            <returns>result from execution of delegate (could be null)</returns>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractCircuitBreaker`1.Reset">
+            <summary>
+            Reset the CircuitBreaker (sets status to HalfOpen)
+            </summary>
+            <returns>void</returns>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractCircuitBreaker`1.Dispose">
+            <summary>
+            Release resources and call Dispose overrides
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.IFilterAndPipe`1">
+            <summary>
+            Contract for Pipes and Filters design pattern
+            </summary>
+            <typeparam name="T">the type for pattern execution</typeparam>
+        </member>
+        <member name="P:Common.Standard.Generic.IFilterAndPipe`1.Name">
+            <summary>
+            The logical name of this Filter
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.IFilterAndPipe`1.SortOrder">
+            <summary>
+            The ordinal sort order
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.IFilterAndPipe`1.ParallelExecution">
+            <summary>
+            Use Parallel execution (no waiting for the filter action to complete)
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.IFilterAndPipe`1.CanFilterItem(`0)">
+            <summary>
+            Return true to continue piping to this filter, false halts this filter from piping
+            </summary>
+            <param name="item">the item to filter and pipe</param>
+            <returns>true or false</returns>
+        </member>
+        <member name="M:Common.Standard.Generic.IFilterAndPipe`1.Pipe(`0)">
+            <summary>
+            Pipe to the next filter(s)
+            </summary>
+            <param name="item">the item to filter and pipe</param>
+        </member>
+        <member name="M:Common.Standard.Generic.IFilterAndPipe`1.Filter(`0)">
+            <summary>
+            The filter action to take on each item
+            </summary>
+            <param name="item">the item to filter</param>
+        </member>
+        <member name="M:Common.Standard.Generic.IFilterAndPipe`1.AddFilter(Common.Standard.Generic.IFilterAndPipe{`0})">
+            <summary>
+            Add a sub-filter to this filter
+            </summary>
+            <param name="nextFilter">the next filter to add</param>
+        </member>
+        <member name="E:Common.Standard.Generic.IFilterAndPipe`1.FilterExceptionEncountered">
+            <summary>
+            Event handling for when and exception is encountered
+            </summary>
+        </member>
+        <member name="E:Common.Standard.Generic.IFilterAndPipe`1.FilterCompleted">
+            <summary>
+            The filter has completed filtering and piping
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.AbstractFilterAndPipe`1">
+            <summary>
+            Abstraction class of a Filter and Pipe 
+            </summary>
+            <typeparam name="T">the type to filter and pipe</typeparam>
+        </member>
+        <member name="P:Common.Standard.Generic.AbstractFilterAndPipe`1.Name">
+            <summary>
+            The logical name of this Filter
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.AbstractFilterAndPipe`1.SortOrder">
+            <summary>
+            The ordinal sort order
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.AbstractFilterAndPipe`1.ParallelExecution">
+            <summary>
+            Use Parallel execution (no waiting for the filter action to complete)
+            </summary>
+        </member>
+        <member name="E:Common.Standard.Generic.AbstractFilterAndPipe`1.FilterExceptionEncountered">
+            <summary>
+            Event handling for when and exception is encountered
+            </summary>
+        </member>
+        <member name="E:Common.Standard.Generic.AbstractFilterAndPipe`1.FilterCompleted">
+            <summary>
+            The filter has completed filtering and piping
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractFilterAndPipe`1.#ctor(System.String,System.Boolean)">
+            <summary>
+            Default Ctor
+            </summary>
+            <param name="name">Logical name of Filter</param>
+            <param name="parallelExecution">use parallel execution (default = false)</param>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractFilterAndPipe`1.CanFilterItem(`0)">
+            <summary>
+            Return true to continue piping to this filter, false halts this filter from piping
+            </summary>
+            <param name="item">the item to filter and pipe</param>
+            <returns>true or false</returns>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractFilterAndPipe`1.Filter(`0)">
+            <summary>
+            The filter action to take on each item
+            </summary>
+            <param name="item">the item to filter</param>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractFilterAndPipe`1.AddFilter(Common.Standard.Generic.IFilterAndPipe{`0})">
+            <summary>
+            Add a sub-filter to this filter
+            </summary>
+            <param name="nextFilter">the next filter to add</param>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractFilterAndPipe`1.Pipe(`0)">
+            <summary>
+            Pipe to the next filter(s)
+            </summary>
+            <param name="item">the item to filter and pipe</param>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractFilterAndPipe`1.CompareTo(Common.Standard.Generic.IFilterAndPipe{`0})">
+            <summary>
+            The difference between this.SortOrder and the other.SortOrder
+            </summary>
+            <param name="other">the other filter</param>
+            <returns>The difference between this.SortOrder and the other.SortOrder</returns>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractFilterAndPipe`1.Compare(Common.Standard.Generic.IFilterAndPipe{`0},Common.Standard.Generic.IFilterAndPipe{`0})">
+            <summary>
+            Compare two filters and return difference is SortOrder
+            </summary>
+            <param name="x">filter</param>
+            <param name="y">another filter</param>
+            <returns></returns>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractFilterAndPipe`1.AdditionalManagedDispose">
+            <summary>
+            Override this method to add disposal of managed objects
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractFilterAndPipe`1.AdditionalUnManagedDispose">
+            <summary>
+            Override this method to add disposal of unmanaged objects
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.BreakerStatusChangedEventArgs">
+            <summary>
+            EventArgs for Breaker status change
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.DelegateMessageBus">
+            <summary>
+            Type to Delegate Message Bus implementation
+            </summary>
+            <remarks>
+            "When you use a message bus, an application that sends a message no 
+            longer has individual connections to all the applications that must 
+            receive the message. Instead, the application merely passes the message
+            to the message bus, and the message bus transports the message to all 
+            the other applications that are listening for bus messages through a 
+            shared infrastructure. Likewise, an application that receives a message 
+            no longer obtains it directly from the sender. Instead, it takes the 
+            message from the message bus. In effect, the message bus reduces the 
+            fan-out of each application from many to one."
+            From: https://msdn.microsoft.com/en-us/library/ff647328.aspx 
+            And
+            "Extend the communication infrastructure by creating topics or by 
+            dynamically inspecting message content. Enable listening applications 
+            to subscribe to specific messages. Create a mechanism that sends 
+            messages to all interested subscribers"
+            From: https://msdn.microsoft.com/en-us/library/ff649664.aspx 
+            </remarks>
+        </member>
+        <member name="P:Common.Standard.Generic.DelegateMessageBus.Registrations">
+            <summary>
+            Registration Dictionary for collecting delegates by type
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.DelegateMessageBus.Finalize">
+            <summary>
+            Destructor to insure release of resources
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.DelegateMessageBus.Register(System.Type,System.Func{System.Object,System.Boolean})">
+            <summary>
+            Register a delegate by a type
+            </summary>
+            <param name="key">the type for registration</param>
+            <param name="funcDelegate">the delegate for registration</param>
+        </member>
+        <member name="M:Common.Standard.Generic.DelegateMessageBus.DropRegistrations(System.Type)">
+            <summary>
+            Remove the registration type (and delegates)
+            </summary>
+            <param name="typ">the type as a key</param>
+        </member>
+        <member name="M:Common.Standard.Generic.DelegateMessageBus.Publish(System.Object)">
+            <summary>
+            Publish the object to all/any subscribing delegates
+            </summary>
+            <param name="objToPublish">the object to publish</param>
+        </member>
+        <member name="M:Common.Standard.Generic.DelegateMessageBus.Close(System.Boolean)">
+            <summary>
+            Release all resources prior to removal
+            </summary>
+            <param name="disposing">True for deterministic, false for finalization</param>
+        </member>
+        <member name="M:Common.Standard.Generic.DelegateMessageBus.Dispose">
+            <summary>
+            Release all resources and remove
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.DynamicServiceAttribute">
+            <summary>
+            Attribute class to be applied to service classes that
+            GenericServiceLoader can load.
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.IGenericObjectPool`1">
+            <summary>
+            Contract:
+            Performance can be sometimes the key issue during the software development and the
+            object creation(class instantiation) is a costly step. The Object Pool pattern
+            offers a mechanism to reuse objects that are expensive to create. 
+            </summary>
+            <typeparam name="T">the type of item for the Pool</typeparam>
+            <remarks>
+            Based on: https://www.oodesign.com/object-pool-pattern.html
+            </remarks>
+        </member>
+        <member name="M:Common.Standard.Generic.IGenericObjectPool`1.AcquireItem">
+            <summary>
+            Acquire an available item from the Pool
+            </summary>
+            <returns>the acquited item (or null if no more are available)</returns>
+        </member>
+        <member name="M:Common.Standard.Generic.IGenericObjectPool`1.ReleaseItem(`0)">
+            <summary>
+            Release the item back to the Pool
+            </summary>
+            <param name="item">the item to release</param>
+            <returns>void</returns>
+        </member>
+        <member name="E:Common.Standard.Generic.IGenericObjectPool`1.PoolHasNoAvailableItems">
+            <summary>
+            Event handler raised when all the available items in the pool are taken
+            </summary>
+        </member>
+        <member name="E:Common.Standard.Generic.IGenericObjectPool`1.ItemActivated">
+            <summary>
+            Event handler raised when an Item is acquired and activated
+            </summary>
+        </member>
+        <member name="E:Common.Standard.Generic.IGenericObjectPool`1.ItemDeactivated">
+            <summary>
+            Event handler raised when and Item is released back to the Pool and deactivated
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.GenericObjectPool`1">
+            <summary>
+            Abstraction:
+            Performance can be sometimes the key issue during the software development and the
+            object creation(class instantiation) is a costly step. The Object Pool pattern
+            offers a mechanism to reuse objects that are expensive to create. 
+            </summary>
+            <typeparam name="T">the type of item for the Pool</typeparam>
+            <remarks>
+            Based on: https://www.oodesign.com/object-pool-pattern.html
+            </remarks>
+        </member>
+        <member name="E:Common.Standard.Generic.GenericObjectPool`1.PoolHasNoAvailableItems">
+            <summary>
+            Event handler raised when all the available items in the pool are taken
+            </summary>
+        </member>
+        <member name="E:Common.Standard.Generic.GenericObjectPool`1.ItemActivated">
+            <summary>
+            Event handler raised when an Item is acquired and activated
+            </summary>
+        </member>
+        <member name="E:Common.Standard.Generic.GenericObjectPool`1.ItemDeactivated">
+            <summary>
+            Event handler raised when and Item is released back to the Pool and deactivated
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericObjectPool`1.#ctor(System.Int32)">
+            <summary>
+            Default Ctor
+            </summary>
+            <param name="poolSize">the size of the pool</param>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericObjectPool`1.AcquireItem">
+            <summary>
+            Acquire an available item from the Pool
+            </summary>
+            <returns>the acquited item (or null if no more are available)</returns>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericObjectPool`1.ReleaseItem(`0)">
+            <summary>
+            Release the item back to the Pool
+            </summary>
+            <param name="item">the item to release</param>
+            <returns>void</returns>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericObjectPool`1.AdditionalManagedDispose">
+            <summary>
+            Virtual method to dispose manageded items in extending classes
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericObjectPool`1.AdditionalUnmanagedDispose">
+            <summary>
+            Virtual method to dispose unmanaged items in extending classes
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericObjectPool`1.Dispose">
+            <summary>
+            Release any resources used by this object
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.GenericServiceLoader`1">
+            <summary>
+            Service loader - design pattern (adopted from Java implementation) and applied generically
+            Generic utility to load types that correspond to a type (class or interface) from a file path
+            </summary>
+            <remarks>
+            This loader will try to load by Reflection all assemblies for the path and subpaths, even 
+            Microsoft and third party assemblies. 
+            
+            "The java.util.ServiceLoader class helps you find, load, and use service providers. It searches 
+            for service providers on your application's class path or in your runtime environment's 
+            extensions directory. It loads them and enables your application to use the provider's APIs. 
+            If you add new providers to the class path or runtime extension directory, the ServiceLoader 
+            class finds them. If your application knows the provider interface, it can find and use 
+            different implementations of that interface. You can use the first loadable instance of the 
+            interface or iterate through all the available interfaces."  
+            from: https://docs.oracle.com/javase/tutorial/ext/basics/spi.html#the-serviceloader-class 
+            </remarks>
+            <typeparam name="T">the type to find and return</typeparam>
+        </member>
+        <member name="P:Common.Standard.Generic.GenericServiceLoader`1.FoundServices">
+            <summary>
+            List of services found (if any)
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericServiceLoader`1.LoadServicesFrom(System.String)">
+            <summary>
+            Load types (services) that are found in a file path
+            </summary>
+            <param name="folderPath">the top path to search</param>
+            <remarks>
+            The property FoundServices will contain all services (instantiated objects of type T)
+            The method can throw exceptions in case of any issues when searching
+            or loading the assemblies or the service instantiation.
+            The caller is responsible for handling and reporting.
+            </remarks>
+            <exception cref="T:System.NotSupportedException"></exception>
+            <exception cref="T:System.Reflection.TargetInvocationException"></exception>
+            <exception cref="T:System.MethodAccessException"></exception>
+            <exception cref="T:System.MemberAccessException"></exception>
+            <exception cref="T:System.MissingMethodException"></exception>
+            <exception cref="T:System.TypeLoadException"></exception>
+            <exception cref="T:System.Runtime.InteropServices.InvalidComObjectException"></exception>
+            <exception cref="T:System.Runtime.InteropServices.COMException"></exception>
+        </member>
+        <member name="T:Common.Standard.Generic.GenericSpooler`1">
+            <summary>
+            An asynchronous generic executing class that controls spooling -- 
+            putting jobs on a queue and taking them off one at a time. This 
+            class will not block the adding of items in the spool and will 
+            execute the event asynchronously.
+            </summary>
+            <typeparam name="T">The Type of object to provide spooling for</typeparam>
+        </member>
+        <member name="F:Common.Standard.Generic.GenericSpooler`1._inputs">
+            <summary>
+            Threadsafe collection class
+            </summary>
+        </member>
+        <member name="F:Common.Standard.Generic.GenericSpooler`1._processWorkerThread">
+            <summary>
+            The worker thread that supplies each item to the callback
+            </summary>
+        </member>
+        <member name="F:Common.Standard.Generic.GenericSpooler`1._operationHandles">
+            <summary>
+            Wait handles to control process flow
+            </summary>
+        </member>
+        <member name="F:Common.Standard.Generic.GenericSpooler`1._trafficEvent">
+            <summary>
+            Traffic stop/go control event
+            </summary>
+        </member>
+        <member name="F:Common.Standard.Generic.GenericSpooler`1._exitEvent">
+            <summary>
+            Signal this event to stop the spooler and exit the process thread
+            </summary>
+        </member>
+        <member name="F:Common.Standard.Generic.GenericSpooler`1._itemActionEvent">
+            <summary>
+            Pause/Resume control event
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.GenericSpooler`1.HasMore">
+            <summary>
+            True if there are Currently more items in the queue
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.GenericSpooler`1.ItemSpooledDelegate`1">
+            <summary>
+            Item has been spooled to the event
+            </summary>
+            <typeparam name="T">the type of the item</typeparam>
+            <param name="item">the item itself</param>
+        </member>
+        <member name="T:Common.Standard.Generic.GenericSpooler`1.SpoolerEmptyDelegate">
+            <summary>
+            Delegate for when the spooler is empty
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.GenericSpooler`1.ExceptionEncounteredDelegate">
+            <summary>
+            Delegate to use when getting notification that an exception has occurred
+            </summary>
+            <param name="sender">could be either the spooler or the object containing the callback (the callback produced the exception)</param>
+            <param name="ex">the exception caught</param>
+        </member>
+        <member name="E:Common.Standard.Generic.GenericSpooler`1.ExceptionEncountered">
+            <summary>
+            Get notification that an exception has occurred
+            </summary>
+        </member>
+        <member name="E:Common.Standard.Generic.GenericSpooler`1.SpoolerEmpty">
+            <summary>
+            Event to notify the spooler has emptied
+            </summary>
+        </member>
+        <member name="E:Common.Standard.Generic.GenericSpooler`1.ItemSpooled">
+            <summary>
+            Item spooled event (this event raises (asynchronpously) for each item as it is spooled)
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericSpooler`1.Finalize">
+            <summary>
+            Finalizer . . . 
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericSpooler`1.AddItem(`0,System.Boolean)">
+            <summary>
+            Adds an Item of type T to the queue
+            </summary>
+            <param name="item">the item of type T</param>
+            <param name="itemCausesStop">if true the spooler stops after this item and must be restarted</param>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericSpooler`1.Sort">
+            <summary>
+            Stops spooling the items and then resumes
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericSpooler`1.Reset">
+            <summary>
+            Stops the spooler and empties the Queue
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericSpooler`1.Stop">
+            <summary>
+            Stop spooling items.  Items can still be added/removed/replaced but will not be spooled out
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericSpooler`1.Resume">
+            <summary>
+            Starts the spooling again.  All items still in the queue are sent out.
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericSpooler`1.GeneralDispose">
+            <summary>
+            Virtual method to override for adding general disposal by extending classes
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericSpooler`1.DeterministicDispose">
+            <summary>
+            Virtual method to override for adding dispose called using the Dispose() by extending classes
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericSpooler`1.FinalizeDispose">
+            <summary>
+            Virtual method to override for adding Finalizer disposal by calling the Destructor (finalize) on extending classes
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericSpooler`1.StartProcess">
+            <summary>
+            Starts the thread that spools the items off the queue (if not yet started)
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericSpooler`1.ProcessWhileHasInput">
+            <summary>
+            The method the thread executes.  The thread executes the Callback delegate for each item it takes off the queue.
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericSpooler`1.RaiseException(System.Object,System.Exception)">
+            <summary>
+            Call the event (if there are any listeners)
+            </summary>
+            <param name="sender"></param>
+            <param name="ex"></param>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericSpooler`1.RaiseItemSpooledEvent(`0)">
+            <summary>
+            Raise the event for each item as it is spooled
+            </summary>
+            <param name="item">the item to spool</param>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericSpooler`1.Dispose(System.Boolean)">
+            <summary>
+            Dispose implementation to type of disposing
+            </summary>
+            <param name="disposing">True for deterministic, false for finalization</param>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericSpooler`1.Dispose">
+            <summary>
+            Release all resources (clears List)
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.GenericSpooler`1.ItemMetaData.HoldOnItem">
+            <summary>
+            If true spooler stops after this item
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.GenericSpooler`1.ItemMetaData.Item">
+            <summary>
+            The item in the spool
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.Helpers">
+            <summary>
+            Static Helper class containing generic helper methods that are suitable for static execution
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.Helpers.GetFirstValueReturned``1(System.Func{``0}[])">
+            <summary>
+            Executes a list of functions in parallel and returns the first one that does not return a null
+            </summary>
+            <typeparam name="T">the type for the return</typeparam>
+            <param name="listOfFunctions">the func array to execute in parallel</param>
+            <returns>the first returned item that is not null, null or default if they all return null</returns>
+        </member>
+        <member name="T:Common.Standard.Generic.IDelegateMessageBus">
+            <summary>
+            Contract for a message bus that uses a delegate
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.IDelegateMessageBus.Registrations">
+            <summary>
+            Registration Dictionary for collecting delegates by type
+            Author: Jeff Bramlett (jeffrey.bramlett@gmail.com)
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.IDelegateMessageBus.Register(System.Type,System.Func{System.Object,System.Boolean})">
+            <summary>
+            Register a delegate by a type
+            </summary>
+            <param name="key">the type for registration</param>
+            <param name="funcDelegate">the delegate for registration</param>
+        </member>
+        <member name="M:Common.Standard.Generic.IDelegateMessageBus.DropRegistrations(System.Type)">
+            <summary>
+            Remove the registration type (and delegates)
+            </summary>
+            <param name="typ">the type as a key</param>
+        </member>
+        <member name="M:Common.Standard.Generic.IDelegateMessageBus.Publish(System.Object)">
+            <summary>
+            Publish the object to all/any subscribing delegates
+            </summary>
+            <param name="objToPublish">the object to publish</param>
+        </member>
+        <member name="M:Common.Standard.Generic.IDelegateMessageBus.Dispose">
+            <summary>
+            Release all resources and remove
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.IGenericSpooler`1">
+            <summary>
+            Contract for a spooler, if you want to make your own.
+            Author: Jeff Bramlett (jeffrey.bramlett@gmail.com)
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:Common.Standard.Generic.IGenericSpooler`1.AddItem(`0,System.Boolean)">
+            <summary>
+            Add Item to the spool
+            </summary>
+            <param name="item"></param>
+            <param name="itemCausesStop">if true cause the spooler to pause at this item, it must be resumed after this</param>
+        </member>
+        <member name="M:Common.Standard.Generic.IGenericSpooler`1.Stop">
+            <summary>
+            Stop spooling for now
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Common.Standard.Generic.IGenericSpooler`1.Sort" -->
+        <member name="M:Common.Standard.Generic.IGenericSpooler`1.Reset">
+            <summary>
+            Stops the spooler and empties the Queue
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.IGenericSpooler`1.Resume">
+            <summary>
+            Resume spooling after being stopped
+            </summary>
+        </member>
+        <member name="E:Common.Standard.Generic.IGenericSpooler`1.ExceptionEncountered">
+            <summary>
+            Some exception happened in the spool, either in the spooler or in the message handler
+            </summary>
+        </member>
+        <member name="E:Common.Standard.Generic.IGenericSpooler`1.ItemSpooled">
+            <summary>
+            Item spooled event (this event raises (asynchronpously) for each item as it is spooled)
+            </summary>
+        </member>
+        <member name="E:Common.Standard.Generic.IGenericSpooler`1.SpoolerEmpty">
+            <summary>
+            Spooler has no more items in it
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.IServiceLoader`1">
+            <summary>
+            Interface to a late-binding service loader
+            </summary>
+            <typeparam name="T">the service type</typeparam>
+        </member>
+        <member name="M:Common.Standard.Generic.IServiceLoader`1.LoadServicesFrom(System.String)">
+            <summary>
+            Load types (services) that are found in a file path
+            </summary>
+            <param name="folderPath">the top path to search</param>
+            <remarks>
+            The property FoundServices will contain all services (instantiated objects of type T)
+            </remarks>
+        </member>
+        <member name="P:Common.Standard.Generic.IServiceLoader`1.FoundServices">
+            <summary>
+            List of services found (if any)
+            </summary>
+        </member>
+        <member name="T:Common.Standard.ISlidingTimer">
+            <summary>
+            Public contract for the SlidingTimer
+            </summary>
+        </member>
+        <member name="M:Common.Standard.ISlidingTimer.BumpTimer">
+            <summary>
+            Bump the timer to "slide" the dlegate execution
+            </summary>
+        </member>
+        <member name="T:Common.Standard.SlidingTimer">
+            <summary>
+            Slide the timer when it is "Bumped" and then when the timer elasps call delegate
+            </summary>
+        </member>
+        <member name="M:Common.Standard.SlidingTimer.#ctor(System.TimeSpan,System.Int32,System.Action)">
+            <summary>
+            Default Ctor
+            </summary>
+            <param name="interval">interval to call delegate when the "slide" expires</param>
+            <param name="numberOfTriesBeforeStopping">how many times the delegate is called before quiting</param>
+            <param name="slidingAction">the delegate to call when the sliding elaspes</param>
+        </member>
+        <member name="M:Common.Standard.SlidingTimer.Finalize">
+            <summary>
+            Finalizer to insure that the sliding timer is disposed even if Dispose is not called
+            </summary>
+        </member>
+        <member name="M:Common.Standard.SlidingTimer.BumpTimer">
+            <summary>
+            Bump (a.k.a. slide) the delegate timer.  Resets the timer to the interval from the current time
+            </summary>
+        </member>
+        <member name="M:Common.Standard.SlidingTimer.Dispose">
+            <summary>
+            Dispose of this instance
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Toggles.DefaultToggleRepository">
+            <summary>
+            Executing class to provide access to toggles in Json
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Toggles.DefaultToggleRepository.Init">
+            <summary>
+            Initialize the Repository
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Toggles.DefaultToggleRepository.LoadFromJsonFile(System.String)">
+            <summary>
+            Load toggles from a filename
+            </summary>
+            <param name="file">the filename</param>
+        </member>
+        <member name="M:Common.Standard.Toggles.DefaultToggleRepository.LoadFromJsonContent(System.String)">
+            <summary>
+            Load toggles from JSON content
+            </summary>
+            <param name="jsonContent">JSON serialization of a Toggle array</param>
+        </member>
+        <member name="M:Common.Standard.Toggles.DefaultToggleRepository.AddToggle(System.String,System.DateTime)">
+            <summary>
+            Add a Toggle (Ad-Hoc)
+            </summary>
+            <param name="key">Toggle Key</param>
+            <param name="startAt">DateTime when this Toggle becomes active</param>
+        </member>
+        <member name="M:Common.Standard.Toggles.DefaultToggleRepository.AddToggle(Common.Standard.Toggles.IToggle)">
+            <summary>
+            Add a Toggle (Ad-Hoc)
+            </summary>
+            <param name="toggle">the Toggle to add</param>
+        </member>
+        <member name="M:Common.Standard.Toggles.DefaultToggleRepository.HasToggleByKey(System.String)">
+            <summary>
+            Does the Toggle exist for the key
+            </summary>
+            <param name="key">the key</param>
+            <returns>True if found, false otherwised</returns>
+        </member>
+        <member name="M:Common.Standard.Toggles.DefaultToggleRepository.ToggleForKey(System.String)">
+            <summary>
+            Get the Toggle for the key
+            </summary>
+            <param name="key">the key for the Toggle</param>
+            <returns>True if found and false otherwise</returns>
+        </member>
+        <member name="T:Common.Standard.Toggles.IToggle">
+            <summary>
+            Implementation of a Toggle
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Toggles.IToggle.IsEnabled">
+            <summary>
+            The toggle is enabled
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Toggles.IToggle.Key">
+            <summary>
+            The key to the toggle (unique)
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Toggles.IToggle.Start">
+            <summary>
+            When the toggle is to become active
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Toggles.IToggleProvider">
+            <summary>
+            Implementation of a ToggleProvider
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Toggles.IToggleProvider.AddToggle(Common.Standard.Toggles.IToggle)">
+            <summary>
+            Adds a Toggle to the provider
+            </summary>
+            <param name="toggle">the toggle to add</param>
+        </member>
+        <member name="M:Common.Standard.Toggles.IToggleProvider.AddToggle(System.String,System.DateTime)">
+            <summary>
+            Add a Toggle to the provider
+            </summary>
+            <param name="key">the key to the Toggle</param>
+            <param name="startAt">the datetime the Toggle becomes active</param>
+        </member>
+        <member name="M:Common.Standard.Toggles.IToggleProvider.IsToggled(System.String)">
+            <summary>
+            Check the Toggle
+            </summary>
+            <param name="key">the key to the toggle</param>
+            <returns>True if togged and false otherwise</returns>
+        </member>
+        <member name="T:Common.Standard.Toggles.IToggleRepository">
+            <summary>
+            Implementation of a ToggleRepository
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Toggles.IToggleRepository.Init">
+            <summary>
+            Initialize the Repository
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Toggles.IToggleRepository.HasToggleByKey(System.String)">
+            <summary>
+            Does the Toggle exist
+            </summary>
+            <param name="key">the key of the Toggle</param>
+            <returns>true if found, false otherwise</returns>
+        </member>
+        <member name="M:Common.Standard.Toggles.IToggleRepository.ToggleForKey(System.String)">
+            <summary>
+            Get the Toggle for the key
+            </summary>
+            <param name="key">the toggle key</param>
+            <returns>the found Toggle or null if not found</returns>
+        </member>
+        <member name="M:Common.Standard.Toggles.IToggleRepository.AddToggle(System.String,System.DateTime)">
+            <summary>
+            Add a Toggle by key and starting date time
+            </summary>
+            <param name="key">the toggle key</param>
+            <param name="startAt">the effective date time</param>
+        </member>
+        <member name="M:Common.Standard.Toggles.IToggleRepository.AddToggle(Common.Standard.Toggles.IToggle)">
+            <summary>
+            Add a Toggle object
+            </summary>
+            <param name="toggle">the Toggle object</param>
+        </member>
+        <member name="T:Common.Standard.Toggles.Toggle">
+            <summary>
+            Data class for a Toggle
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Toggles.Toggle.Key">
+            <summary>
+            The unique key for the Toggle
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Toggles.Toggle.IsEnabled">
+            <summary>
+            Is it enabled
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Toggles.Toggle.Start">
+            <summary>
+            Is it Active
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Toggles.ToggleProvider">
+            <summary>
+            Toggles provider for implementing toggling in .Net applications
+            </summary>
+            <remarks>
+            See: https://surfingthecode.com/feature-toggles-in-.net-tips-and-tricks/
+            See Martin Fowler article at:  https://martinfowler.com/articles/feature-toggles.html 
+            </remarks>
+        </member>
+        <member name="M:Common.Standard.Toggles.ToggleProvider.#ctor(Common.Standard.Toggles.IToggleRepository)">
+            <summary>
+            Default Ctor
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Toggles.ToggleProvider.AddToggle(System.String,System.DateTime)">
+            <summary>
+            For Ad-hoc toggle adding to the provider
+            </summary>
+            <param name="key">the toggle key</param>
+            <param name="startAt">When this toggle will become active</param>
+            <returns>true is successfully added</returns>
+        </member>
+        <member name="M:Common.Standard.Toggles.ToggleProvider.AddToggle(Common.Standard.Toggles.IToggle)">
+            <summary>
+            For Ad-hoc toggle adding to the provider
+            </summary>
+            <param name="toggle">the toggle to add</param>
+            <returns>true is successfully added</returns>
+        </member>
+        <member name="M:Common.Standard.Toggles.ToggleProvider.IsToggled(System.String)">
+            <summary>
+            Checks a Toggle
+            </summary>
+            <param name="key">the toggle key to find</param>
+            <returns>True if the Enabled and the Start datetime has been reached or exceeded</returns>
+        </member>
+    </members>
+</doc>
