@@ -16,7 +16,6 @@ namespace Common.Standard.Toggles
     public class ToggleProvider : IToggleProvider
     {
         #region Fields
-        private bool _isInited = false;
 
         #endregion
 

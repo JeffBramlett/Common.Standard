@@ -124,6 +124,9 @@ namespace Common.Standard.Generic
             Initialize().Wait();
         }
 
+        /// <summary>
+        /// Finalizer for Object Pool
+        /// </summary>
         ~GenericObjectPool()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
@@ -175,6 +178,10 @@ namespace Common.Standard.Generic
             });
         }
 
+        /// <summary>
+        /// Contract the Pool to active size
+        /// </summary>
+        /// <returns></returns>
         public async Task ContractItemPool()
         {
             await Task.Run(() =>
@@ -245,7 +252,6 @@ namespace Common.Standard.Generic
 
             return ndx;
         }
-
 
         private void ContractPool()
         {

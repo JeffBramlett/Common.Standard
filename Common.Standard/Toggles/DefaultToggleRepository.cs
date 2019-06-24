@@ -134,7 +134,7 @@ namespace Common.Standard.Toggles
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
-        protected void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
@@ -156,7 +156,9 @@ namespace Common.Standard.Toggles
         //   Dispose(false);
         // }
 
-        // This code added to correctly implement the disposable pattern.
+       /// <summary>
+       /// Dispose this toggle repository
+       /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.

@@ -47,7 +47,6 @@ namespace Test.Common.Standard
         [Fact]
         public void SpoolerEventExecutes_Order_test()
         {
-            int count = 0;
             List<int> spooledList = new List<int>();
 
             GenericSpooler<int> spooler = new GenericSpooler<int>();

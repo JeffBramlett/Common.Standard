@@ -67,9 +67,8 @@ namespace Common.Standard.Generic
         /// <summary>
         /// Item has been spooled to the event
         /// </summary>
-        /// <typeparam name="T">the type of the item</typeparam>
         /// <param name="item">the item itself</param>
-        public delegate void ItemSpooledDelegate<T>(T item);
+        public delegate void ItemSpooledDelegate(T item);
 
         /// <summary>
         /// Delegate for when the spooler is empty
@@ -96,10 +95,13 @@ namespace Common.Standard.Generic
         /// <summary>
         /// Item spooled event (this event raises (asynchronpously) for each item as it is spooled)
         /// </summary>
-        public event ItemSpooledDelegate<T> ItemSpooled;
+        public event ItemSpooledDelegate ItemSpooled;
         #endregion
 
         #region Ctors and Dtors
+        /// <summary>
+        /// Default Ctor
+        /// </summary>
         public GenericSpooler()
         {
             _inputs = new ConcurrentQueue<ItemMetaData>();

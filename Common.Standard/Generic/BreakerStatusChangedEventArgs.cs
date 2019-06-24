@@ -9,6 +9,9 @@ namespace Common.Standard.Generic
     /// </summary>
     public class BreakerStatusChangedEventArgs: EventArgs
     {
+        /// <summary>
+        /// The status change for Circuit breaker
+        /// </summary>
         public CircuitBreakerStatuses BreakerStatus { get; set; }
     }
 }

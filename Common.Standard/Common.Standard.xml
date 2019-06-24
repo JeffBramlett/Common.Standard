@@ -45,6 +45,17 @@
             Required parameterless Ctor for lazy instance
             </summary>
         </member>
+        <member name="M:Common.Standard.AsyncTextWriter.#ctor(System.String)">
+            <summary>
+            Ctor for Text writer with specific filename
+            </summary>
+            <param name="filename"></param>
+        </member>
+        <member name="M:Common.Standard.AsyncTextWriter.Finalize">
+            <summary>
+            Finalizer
+            </summary>
+        </member>
         <member name="M:Common.Standard.AsyncTextWriter.Init(System.String)">
             <summary>
             Initialize the writer to a filename
@@ -64,6 +75,86 @@
             </summary>
             <param name="contentLine">the line of text</param>
             <param name="formatArgs">args for string.format</param>
+        </member>
+        <member name="M:Common.Standard.AsyncTextWriter.Dispose(System.Boolean)">
+            <summary>
+            Dispose of this text writer
+            </summary>
+            <param name="disposing"></param>
+        </member>
+        <member name="M:Common.Standard.AsyncTextWriter.Dispose">
+            <summary>
+            Dispose this text writer
+            </summary>
+        </member>
+        <member name="T:Common.Standard.ConsoleWriter">
+            <summary>
+            Write to the console window for Information, Emphasis, Important, and Warning
+            Useful for console applications (i.e. quick demos)
+            </summary>
+        </member>
+        <member name="P:Common.Standard.ConsoleWriter.Instance">
+            <summary>
+            Singleton of the ConsoleWriter
+            </summary>
+        </member>
+        <member name="M:Common.Standard.ConsoleWriter.#ctor">
+            <summary>
+            Default Ctor
+            </summary>
+        </member>
+        <member name="M:Common.Standard.ConsoleWriter.Finalize">
+            <summary>
+            Finalizer
+            </summary>
+        </member>
+        <member name="M:Common.Standard.ConsoleWriter.WriteInformation(System.String,System.Boolean,System.ConsoleKey)">
+            <summary>
+            Write message as Information
+            </summary>
+            <param name="message">the message to write to the console</param>
+            <param name="waitForKey">true to wait for a key (optional, default = false)</param>
+            <param name="keyToWaitFor">the key to wait for (optional, default = escape key)</param>
+        </member>
+        <member name="M:Common.Standard.ConsoleWriter.WriteEmphasis(System.String,System.Boolean,System.ConsoleKey)">
+            <summary>
+            Write message as Emphasis
+            </summary>
+            <param name="message">the message to write to the console</param>
+            <param name="waitForKey">true to wait for a key (optional, default = false)</param>
+            <param name="keyToWaitFor">the key to wait for (optional, default = escape key)</param>
+        </member>
+        <member name="M:Common.Standard.ConsoleWriter.WriteImportant(System.String,System.Boolean,System.ConsoleKey)">
+            <summary>
+            Write message as Important
+            </summary>
+            <param name="message">the message to write to the console</param>
+            <param name="waitForKey">true to wait for a key (optional, default = false)</param>
+            <param name="keyToWaitFor">the key to wait for (optional, default = escape key)</param>
+        </member>
+        <member name="M:Common.Standard.ConsoleWriter.WriteWarning(System.String,System.Boolean,System.ConsoleKey)">
+            <summary>
+            Write message as Warning
+            </summary>
+            <param name="message">the message to write to the console</param>
+            <param name="waitForKey">true to wait for a key (optional, default = false)</param>
+            <param name="keyToWaitFor">the key to wait for (optional, default = escape key)</param>
+        </member>
+        <member name="M:Common.Standard.ConsoleWriter.Dispose(System.Boolean)">
+            <summary>
+            Dispose fo the console writer
+            </summary>
+            <param name="disposing"></param>
+        </member>
+        <member name="M:Common.Standard.ConsoleWriter.Dispose">
+            <summary>
+            Dispose of the ConsoleWriter
+            </summary>
+        </member>
+        <member name="T:Common.Standard.ConsoleWriter.WriteInfo">
+            <summary>
+            Not publically accessible class for console writer
+            </summary>
         </member>
         <member name="T:Common.Standard.Extensions.ListExtensions">
             <summary>
@@ -242,6 +333,11 @@
             Event handling for a completed object input
             </summary>
         </member>
+        <member name="M:Common.Standard.Generic.AbstractAmbassador`2.Finalize">
+            <summary>
+            Finalizer
+            </summary>
+        </member>
         <member name="M:Common.Standard.Generic.AbstractAmbassador`2.AddInputToQueue(`0)">
             <summary>
             Add object to the Ambassador work queue
@@ -275,10 +371,44 @@
             Event Args class for input exceptions
             </summary>
         </member>
+        <member name="P:Common.Standard.Generic.AbstractAmbassador`2.InputExceptionEventArgs.Input">
+            <summary>
+            The input for the Ambassador
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.AbstractAmbassador`2.InputExceptionEventArgs.Exception">
+            <summary>
+            Exception encountered
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractAmbassador`2.InputExceptionEventArgs.#ctor(`0,System.Exception)">
+            <summary>
+            Default Ctor
+            </summary>
+            <param name="input">the input</param>
+            <param name="e">the exception encountered for the input</param>
+        </member>
         <member name="T:Common.Standard.Generic.AbstractAmbassador`2.InputCompletedEventArgs">
             <summary>
             Event args class for input completion
             </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.AbstractAmbassador`2.InputCompletedEventArgs.Input">
+            <summary>
+            The input complete
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.AbstractAmbassador`2.InputCompletedEventArgs.Response">
+            <summary>
+            The response for the input
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractAmbassador`2.InputCompletedEventArgs.#ctor(`0,`1)">
+            <summary>
+            The default Ctor
+            </summary>
+            <param name="input">the input</param>
+            <param name="response">the response</param>
         </member>
         <member name="T:Common.Standard.Generic.CircuitBreakerStatuses">
             <summary>
@@ -357,6 +487,11 @@
             The threshold that when reached open the circuit breaker
             </summary>
         </member>
+        <member name="P:Common.Standard.Generic.AbstractCircuitBreaker`1.ThresholdCount">
+            <summary>
+            The threshold for the circuit break
+            </summary>
+        </member>
         <member name="P:Common.Standard.Generic.AbstractCircuitBreaker`1.RetryTimeSpan">
             <summary>
             The timespan between retries
@@ -401,6 +536,16 @@
             Reset the CircuitBreaker (sets status to HalfOpen)
             </summary>
             <returns>void</returns>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractCircuitBreaker`1.DisposeManaged">
+            <summary>
+            Virtual for extending classes to override to dispose managed classes (base method does nothing)
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractCircuitBreaker`1.DisposeUnManaged">
+            <summary>
+            Virtual for extending classes to override to dispose unmanaged classes (base method does nothing)
+            </summary>
         </member>
         <member name="M:Common.Standard.Generic.AbstractCircuitBreaker`1.Dispose">
             <summary>
@@ -551,9 +696,19 @@
             Override this method to add disposal of unmanaged objects
             </summary>
         </member>
+        <member name="M:Common.Standard.Generic.AbstractFilterAndPipe`1.Dispose">
+            <summary>
+            Dispose this instance
+            </summary>
+        </member>
         <member name="T:Common.Standard.Generic.BreakerStatusChangedEventArgs">
             <summary>
             EventArgs for Breaker status change
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.BreakerStatusChangedEventArgs.BreakerStatus">
+            <summary>
+            The status change for Circuit breaker
             </summary>
         </member>
         <member name="T:Common.Standard.Generic.DelegateMessageBus">
@@ -625,6 +780,68 @@
             GenericServiceLoader can load.
             </summary>
         </member>
+        <member name="P:Common.Standard.Generic.DynamicServiceAttribute.Title">
+            <summary>
+            The service title
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.DynamicServiceAttribute.Description">
+            <summary>
+            The service description
+            </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.FilterCompleteEventArgs">
+            <summary>
+            Event args for Filter completion
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.FilterCompleteEventArgs.FilterName">
+            <summary>
+            The filter name
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.FilterCompleteEventArgs.Message">
+            <summary>
+            Messages from the filter
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.FilterCompleteEventArgs.MoreCompleteEventArgs">
+            <summary>
+            Downline filter complete Args
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.FilterCompleteEventArgs.#ctor(System.String)">
+            <summary>
+            Default Ctor
+            </summary>
+            <param name="name">the name fo the filter</param>
+        </member>
+        <member name="T:Common.Standard.Generic.FilterExceptionEventArgs">
+            <summary>
+            Filter exception 
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.FilterExceptionEventArgs.FilterName">
+            <summary>
+            The filter name
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.FilterExceptionEventArgs.Exception">
+            <summary>
+            The exception that occurred in the filter
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.FilterExceptionEventArgs.MoreExceptionEventArgs">
+            <summary>
+            The "sub" filters for this filter
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.FilterExceptionEventArgs.#ctor(System.String)">
+            <summary>
+            The default Ctor
+            </summary>
+            <param name="name"></param>
+        </member>
         <member name="T:Common.Standard.Generic.IGenericObjectPool`1">
             <summary>
             Contract:
@@ -650,19 +867,20 @@
             <param name="item">the item to release</param>
             <returns>void</returns>
         </member>
-        <member name="E:Common.Standard.Generic.IGenericObjectPool`1.PoolHasNoAvailableItems">
+        <member name="M:Common.Standard.Generic.IGenericObjectPool`1.ContractItemPool">
             <summary>
-            Event handler raised when all the available items in the pool are taken
+            Contract the Pool to the original size or the size of active items
+            </summary>
+            <returns>void</returns>
+        </member>
+        <member name="P:Common.Standard.Generic.IGenericObjectPool`1.Count">
+            <summary>
+            Return the count of active items
             </summary>
         </member>
-        <member name="E:Common.Standard.Generic.IGenericObjectPool`1.ItemActivated">
+        <member name="P:Common.Standard.Generic.IGenericObjectPool`1.Size">
             <summary>
-            Event handler raised when an Item is acquired and activated
-            </summary>
-        </member>
-        <member name="E:Common.Standard.Generic.IGenericObjectPool`1.ItemDeactivated">
-            <summary>
-            Event handler raised when and Item is released back to the Pool and deactivated
+            Return the allocated size of the pool
             </summary>
         </member>
         <member name="T:Common.Standard.Generic.GenericObjectPool`1">
@@ -677,19 +895,14 @@
             Based on: https://www.oodesign.com/object-pool-pattern.html
             </remarks>
         </member>
-        <member name="E:Common.Standard.Generic.GenericObjectPool`1.PoolHasNoAvailableItems">
+        <member name="P:Common.Standard.Generic.GenericObjectPool`1.Count">
             <summary>
-            Event handler raised when all the available items in the pool are taken
+            Return the count of active items
             </summary>
         </member>
-        <member name="E:Common.Standard.Generic.GenericObjectPool`1.ItemActivated">
+        <member name="P:Common.Standard.Generic.GenericObjectPool`1.Size">
             <summary>
-            Event handler raised when an Item is acquired and activated
-            </summary>
-        </member>
-        <member name="E:Common.Standard.Generic.GenericObjectPool`1.ItemDeactivated">
-            <summary>
-            Event handler raised when and Item is released back to the Pool and deactivated
+            Return the allocated size of the pool
             </summary>
         </member>
         <member name="M:Common.Standard.Generic.GenericObjectPool`1.#ctor(System.Int32)">
@@ -697,6 +910,11 @@
             Default Ctor
             </summary>
             <param name="poolSize">the size of the pool</param>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericObjectPool`1.Finalize">
+            <summary>
+            Finalizer for Object Pool
+            </summary>
         </member>
         <member name="M:Common.Standard.Generic.GenericObjectPool`1.AcquireItem">
             <summary>
@@ -710,6 +928,12 @@
             </summary>
             <param name="item">the item to release</param>
             <returns>void</returns>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericObjectPool`1.ContractItemPool">
+            <summary>
+            Contract the Pool to active size
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Common.Standard.Generic.GenericObjectPool`1.AdditionalManagedDispose">
             <summary>
@@ -815,11 +1039,10 @@
             True if there are Currently more items in the queue
             </summary>
         </member>
-        <member name="T:Common.Standard.Generic.GenericSpooler`1.ItemSpooledDelegate`1">
+        <member name="T:Common.Standard.Generic.GenericSpooler`1.ItemSpooledDelegate">
             <summary>
             Item has been spooled to the event
             </summary>
-            <typeparam name="T">the type of the item</typeparam>
             <param name="item">the item itself</param>
         </member>
         <member name="T:Common.Standard.Generic.GenericSpooler`1.SpoolerEmptyDelegate">
@@ -847,6 +1070,11 @@
         <member name="E:Common.Standard.Generic.GenericSpooler`1.ItemSpooled">
             <summary>
             Item spooled event (this event raises (asynchronpously) for each item as it is spooled)
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.GenericSpooler`1.#ctor">
+            <summary>
+            Default Ctor
             </summary>
         </member>
         <member name="M:Common.Standard.Generic.GenericSpooler`1.Finalize">
@@ -1007,7 +1235,11 @@
             Stop spooling for now
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Common.Standard.Generic.IGenericSpooler`1.Sort" -->
+        <member name="M:Common.Standard.Generic.IGenericSpooler`1.Sort">
+            <summary>
+            Stops spooling, sorts the items, and then resumes spooling
+            </summary>
+        </member>
         <member name="M:Common.Standard.Generic.IGenericSpooler`1.Reset">
             <summary>
             Stops the spooler and empties the Queue
@@ -1033,6 +1265,26 @@
             Spooler has no more items in it
             </summary>
         </member>
+        <member name="T:Common.Standard.Generic.IPoolItem">
+            <summary>
+            The contract for a PoolItem
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.IPoolItem.IsActive">
+            <summary>
+            The PoolItem is active (true) or not active (false)
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.IPoolItem.Activate">
+            <summary>
+            Activate the PoolItem
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.IPoolItem.Deactivate">
+            <summary>
+            Deactivate the PoolItem
+            </summary>
+        </member>
         <member name="T:Common.Standard.Generic.IServiceLoader`1">
             <summary>
             Interface to a late-binding service loader
@@ -1052,6 +1304,50 @@
             <summary>
             List of services found (if any)
             </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.PoolItemActionEventArgs`1">
+            <summary>
+            Event args for an Object Pool action
+            </summary>
+            <typeparam name="T">the object type</typeparam>
+        </member>
+        <member name="T:Common.Standard.Generic.PoolItemActionEventArgs`1.PoolItemActions">
+            <summary>
+            The actions on a Pool Item
+            </summary>
+        </member>
+        <member name="F:Common.Standard.Generic.PoolItemActionEventArgs`1.PoolItemActions.Activated">
+            <summary>
+            The item is active
+            </summary>
+        </member>
+        <member name="F:Common.Standard.Generic.PoolItemActionEventArgs`1.PoolItemActions.Deactivated">
+            <summary>
+            The item has been deactivated
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.PoolItemActionEventArgs`1.PoolItemAction">
+            <summary>
+            The instance of the args for the Pool Action
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.PoolItemActionEventArgs`1.Message">
+            <summary>
+            A message about the Pool Item action
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.PoolItemActionEventArgs`1.PoolItem">
+            <summary>
+            The Pool item for the action
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.PoolItemActionEventArgs`1.#ctor(`0,Common.Standard.Generic.PoolItemActionEventArgs{`0}.PoolItemActions,System.String)">
+            <summary>
+            The default Ctor
+            </summary>
+            <param name="poolItem">the PoolItem</param>
+            <param name="poolItemAction">the action for the pool item</param>
+            <param name="message">and messageing for the pool item</param>
         </member>
         <member name="T:Common.Standard.ISlidingTimer">
             <summary>
@@ -1139,6 +1435,11 @@
             </summary>
             <param name="key">the key for the Toggle</param>
             <returns>True if found and false otherwise</returns>
+        </member>
+        <member name="M:Common.Standard.Toggles.DefaultToggleRepository.Dispose">
+            <summary>
+            Dispose this toggle repository
+            </summary>
         </member>
         <member name="T:Common.Standard.Toggles.IToggle">
             <summary>

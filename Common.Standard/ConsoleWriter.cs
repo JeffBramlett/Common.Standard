@@ -4,6 +4,10 @@ using Common.Standard.Generic;
 
 namespace Common.Standard
 {
+    /// <summary>
+    /// Write to the console window for Information, Emphasis, Important, and Warning
+    /// Useful for console applications (i.e. quick demos)
+    /// </summary>
     public class ConsoleWriter: IDisposable
     {
         #region Enums (private)
@@ -71,6 +75,10 @@ namespace Common.Standard
 
         #region Singleton
         private static Lazy<ConsoleWriter> _staticWriter = new Lazy<ConsoleWriter>();
+
+        /// <summary>
+        /// Singleton of the ConsoleWriter
+        /// </summary>
         public static ConsoleWriter Instance
         {
             get { return _staticWriter.Value; }
@@ -78,15 +86,33 @@ namespace Common.Standard
         #endregion
 
         #region Ctors and Dtors
-
+        /// <summary>
+        /// Default Ctor
+        /// </summary>
         public ConsoleWriter()
         {
                 
         }
+
+
+        /// <summary>
+        /// Finalizer
+        /// </summary>
+        ~ConsoleWriter()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
+        }
+
         #endregion
 
         #region Public Write To Methods
-
+        /// <summary>
+        /// Write message as Information
+        /// </summary>
+        /// <param name="message">the message to write to the console</param>
+        /// <param name="waitForKey">true to wait for a key (optional, default = false)</param>
+        /// <param name="keyToWaitFor">the key to wait for (optional, default = escape key)</param>
         public void WriteInformation(string message, bool waitForKey = false, ConsoleKey keyToWaitFor = ConsoleKey.Escape)
         {
             WriteSpooler.AddItem(new WriteInfo(WriteModes.Information, message));
@@ -103,6 +129,12 @@ namespace Common.Standard
             }
         }
 
+        /// <summary>
+        /// Write message as Emphasis
+        /// </summary>
+        /// <param name="message">the message to write to the console</param>
+        /// <param name="waitForKey">true to wait for a key (optional, default = false)</param>
+        /// <param name="keyToWaitFor">the key to wait for (optional, default = escape key)</param>
         public void WriteEmphasis(string message, bool waitForKey = false, ConsoleKey keyToWaitFor = ConsoleKey.Escape)
         {
             WriteSpooler.AddItem(new WriteInfo(WriteModes.Emphasis, message));
@@ -119,6 +151,12 @@ namespace Common.Standard
             }
         }
 
+        /// <summary>
+        /// Write message as Important
+        /// </summary>
+        /// <param name="message">the message to write to the console</param>
+        /// <param name="waitForKey">true to wait for a key (optional, default = false)</param>
+        /// <param name="keyToWaitFor">the key to wait for (optional, default = escape key)</param>
         public void WriteImportant(string message, bool waitForKey = false, ConsoleKey keyToWaitFor = ConsoleKey.Escape)
         {
             WriteSpooler.AddItem(new WriteInfo(WriteModes.Important, message));
@@ -135,6 +173,12 @@ namespace Common.Standard
             }
         }
 
+        /// <summary>
+        /// Write message as Warning
+        /// </summary>
+        /// <param name="message">the message to write to the console</param>
+        /// <param name="waitForKey">true to wait for a key (optional, default = false)</param>
+        /// <param name="keyToWaitFor">the key to wait for (optional, default = escape key)</param>
         public void WriteWarning(string message, bool waitForKey = false, ConsoleKey keyToWaitFor = ConsoleKey.Escape)
         {
             WriteSpooler.AddItem(new WriteInfo(WriteModes.Warning, message));
@@ -155,7 +199,11 @@ namespace Common.Standard
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
-        protected virtual void Dispose(bool disposing)
+        /// <summary>
+        /// Dispose fo the console writer
+        /// </summary>
+        /// <param name="disposing"></param>
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
@@ -175,12 +223,9 @@ namespace Common.Standard
             }
         }
 
-        ~ConsoleWriter()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(false);
-        }
-
+        /// <summary>
+        /// Dispose of the ConsoleWriter
+        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.

@@ -25,6 +25,7 @@ namespace Common.Standard.Generic
 
         /// <summary>
         /// Stops spooling, sorts the items, and then resumes spooling
+        /// </summary>
         void Sort();
 
         /// <summary>
@@ -45,7 +46,7 @@ namespace Common.Standard.Generic
         /// <summary>
         /// Item spooled event (this event raises (asynchronpously) for each item as it is spooled)
         /// </summary>
-        event GenericSpooler<T>.ItemSpooledDelegate<T> ItemSpooled;
+        event GenericSpooler<T>.ItemSpooledDelegate ItemSpooled;
 
         /// <summary>
         /// Spooler has no more items in it

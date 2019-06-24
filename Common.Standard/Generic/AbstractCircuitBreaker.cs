@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -102,6 +103,9 @@ namespace Common.Standard.Generic
             }
         }
 
+        /// <summary>
+        /// The threshold for the circuit break
+        /// </summary>
         protected int ThresholdCount { get; set; }
 
         /// <summary>
@@ -208,17 +212,25 @@ namespace Common.Standard.Generic
         /// <returns>void</returns>
         public async Task Reset()
         {
-            Status = CircuitBreakerStatuses.HalfOpen;
-            ThresholdCount = 0;
+            await Task.Run(() =>
+            {
+                Status = CircuitBreakerStatuses.HalfOpen;
+                ThresholdCount = 0;
+            });
         }
         #endregion
 
         #region protected Overrides
-
+        /// <summary>
+        /// Virtual for extending classes to override to dispose managed classes (base method does nothing)
+        /// </summary>
         protected virtual void DisposeManaged()
         {
 
         }
+        /// <summary>
+        /// Virtual for extending classes to override to dispose unmanaged classes (base method does nothing)
+        /// </summary>
         protected virtual void DisposeUnManaged()
         {
 
@@ -232,7 +244,7 @@ namespace Common.Standard.Generic
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {

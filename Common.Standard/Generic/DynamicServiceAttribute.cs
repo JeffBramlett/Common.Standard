@@ -8,7 +8,14 @@ namespace Common.Standard.Generic
     /// </summary>
     public sealed class DynamicServiceAttribute : Attribute
     {
+        /// <summary>
+        /// The service title
+        /// </summary>
         public string Title { get; set; }
+
+        /// <summary>
+        /// The service description
+        /// </summary>
         public string  Description { get; set; }      
     }
 }

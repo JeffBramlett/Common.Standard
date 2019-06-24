@@ -96,11 +96,24 @@ namespace Common.Standard
         {
         }
 
+        /// <summary>
+        /// Ctor for Text writer with specific filename
+        /// </summary>
+        /// <param name="filename"></param>
         public AsyncTextWriter(string filename)
         {
             filename.ThrowIfNull();
 
             _filename = filename;
+        }
+
+        /// <summary>
+        /// Finalizer
+        /// </summary>
+        ~AsyncTextWriter()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
         }
         #endregion
 
@@ -185,7 +198,11 @@ namespace Common.Standard
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
-        protected virtual void Dispose(bool disposing)
+        /// <summary>
+        /// Dispose of this text writer
+        /// </summary>
+        /// <param name="disposing"></param>
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
@@ -198,26 +215,18 @@ namespace Common.Standard
                     }
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
 
                 disposedValue = true;
             }
         }
 
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        ~AsyncTextWriter()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(false);
-        }
 
-        // This code added to correctly implement the disposable pattern.
+        /// <summary>
+        /// Dispose this text writer
+        /// </summary>
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
             GC.SuppressFinalize(this);
         }
         #endregion

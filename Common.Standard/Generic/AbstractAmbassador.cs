@@ -98,6 +98,9 @@ namespace Common.Standard.Generic
 
         #region Ctors and Dtors
 
+        /// <summary>
+        /// Finalizer
+        /// </summary>
         ~AbstractAmbassador()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
@@ -168,7 +171,7 @@ namespace Common.Standard.Generic
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
-        protected void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
@@ -209,9 +212,21 @@ namespace Common.Standard.Generic
         /// </summary>
         public class InputExceptionEventArgs : EventArgs
         {
+            /// <summary>
+            /// The input for the Ambassador
+            /// </summary>
             public I Input { get; set; }
+
+            /// <summary>
+            /// Exception encountered
+            /// </summary>
             public Exception Exception { get; set; }
 
+            /// <summary>
+            /// Default Ctor
+            /// </summary>
+            /// <param name="input">the input</param>
+            /// <param name="e">the exception encountered for the input</param>
             public InputExceptionEventArgs(I input, Exception e)
             {
                 Input = input;
@@ -224,9 +239,21 @@ namespace Common.Standard.Generic
         /// </summary>
         public class InputCompletedEventArgs : EventArgs
         {
+            /// <summary>
+            /// The input complete
+            /// </summary>
             public I Input { get; set; }
+
+            /// <summary>
+            /// The response for the input
+            /// </summary>
             public R Response { get; set; }
 
+            /// <summary>
+            /// The default Ctor
+            /// </summary>
+            /// <param name="input">the input</param>
+            /// <param name="response">the response</param>
             public InputCompletedEventArgs(I input, R response)
             {
                 Input = input;
