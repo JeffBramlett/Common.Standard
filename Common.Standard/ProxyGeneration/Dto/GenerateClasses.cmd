@@ -1,0 +1,1 @@
+call C:\Tools\Xsd2Code\Xsd2Code.exe ProxyGeneration.Dto.xsd /n:ProxyGeneration.Dto  /db /sc 

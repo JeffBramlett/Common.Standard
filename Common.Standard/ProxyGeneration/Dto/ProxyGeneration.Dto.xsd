@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Extraction"
+    targetNamespace="http://tempuri.org/Extraction.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/Extraction.xsd"
+    xmlns:mstns="http://tempuri.org/Extraction.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:element name="ProxyExtraction">
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="Timestamp" type="xs:dateTime"/>
+        <xs:element name="SourceAssembly" type="xs:string"/>
+        <xs:element name="TypeExtractions">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="TypeExtraction" type="TypeExtraction" maxOccurs="unbounded"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="TypeExtraction">
+    <xs:all>
+      <xs:element name="Namespace" type="xs:string"/>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Fields">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="FieldExtraction" type="FieldExtraction" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Properties">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="PropertyExtraction" type="PropertyExtraction" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Methods">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="MethodExtraction" type="MethodExtraction" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:all>
+  </xs:complexType>
+  <xs:complexType name="FieldExtraction">
+    <xs:all>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="TypeName" type="xs:string"/>
+      <xs:element name="CurrentValue" type="xs:string"/>
+    </xs:all>
+  </xs:complexType>
+  <xs:complexType name="PropertyExtraction">
+    <xs:all>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="TypeName" type="xs:string"/>
+      <xs:element name="HasGet" type="xs:boolean"/>
+      <xs:element name="HasSet" type="xs:boolean"/>
+    </xs:all>
+  </xs:complexType>
+  <xs:complexType name="MethodExtraction">
+    <xs:all>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="ReturnValueType" type="xs:string"/>
+      <xs:element name="Signature" type="xs:string"/>
+      <xs:element name="Arguments">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="MethodArgument" type="MethodArgument" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:all>
+  </xs:complexType>
+  <xs:complexType name="MethodArgument">
+    <xs:all>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Type" type="xs:string"/>
+      <xs:element name="IsParams" type="xs:boolean"/>
+    </xs:all>
+  </xs:complexType>
+</xs:schema>

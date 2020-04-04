@@ -363,7 +363,7 @@ namespace Common.Standard.Generic
 
             // if the worker thread is still running, abort it!
             if (_processWorkerThread != null)
-                _processWorkerThread.Abort();
+                _processWorkerThread.Interrupt();
 
             _processWorkerThread = null;
 

@@ -10,15 +10,22 @@ namespace Common.Standard.Generic
     /// </summary>
     public interface IPoolItem: IDisposable
     {
+        string Name { get; set; }
+
         /// <summary>
-        /// The PoolItem is active (true) or not active (false)
+        /// The current execution count
         /// </summary>
-        bool IsActive { get; }
+        int ActiveCount { get; set; }
+
+        /// <summary>
+        /// The maximum count of unfinished executions
+        /// </summary>
+        int MaxCount { get; }
 
         /// <summary>
         /// Activate the PoolItem
         /// </summary>
-        void Activate();
+        void Activate(params object[] startupObjects);
 
         /// <summary>
         /// Deactivate the PoolItem

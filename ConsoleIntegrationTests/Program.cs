@@ -231,7 +231,7 @@ namespace ConsoleIntegrationTests
         {
             ConsoleWriter.Instance.WriteEmphasis("Generic Pool Test\n");
 
-            IGenericObjectPool<TestPoolItem> testPool = new GenericObjectPool<TestPoolItem>(10);
+            IGenericObjectPool<TestPoolItem> testPool = new GenericObjectPool<TestPoolItem>(10, BalancingMethods.RoundRobin);
 
             List<TestPoolItem> items = new List<TestPoolItem>();
             for (var i = 0; i < 5; i++)

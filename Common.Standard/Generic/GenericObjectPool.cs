@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 
 namespace Common.Standard.Generic
 {
+    public enum BalancingMethods
+    {
+        RoundRobin,
+        Random,
+        MaxCount
+    }
     /// <summary>
     /// Contract:
     /// Performance can be sometimes the key issue during the software development and the
@@ -23,7 +29,7 @@ namespace Common.Standard.Generic
         /// Acquire an available item from the Pool
         /// </summary>
         /// <returns>the acquited item (or null if no more are available)</returns>
-        Task<T> AcquireItem();
+        Task<T> AcquireItem(params object[] activateObjects);
 
         /// <summary>
         /// Release the item back to the Pool
@@ -64,13 +70,15 @@ namespace Common.Standard.Generic
         #region Fields
 
         private bool _isInitialized = false;
-        private T[] _itemPool;
+        private IList<T> _itemPool;
         private readonly int _poolSize = 10;
+
+        private Random _loadingRandom;
         #endregion
 
         #region Properties
 
-        private T[] ItemPool
+        private IList<T> ItemPool
         {
             get
             {
@@ -78,10 +86,14 @@ namespace Common.Standard.Generic
             }
         }
 
-        private int PoolSize
+        protected int PoolSize
         {
             get { return _poolSize; }
         }
+
+        private int CurrentIndex { get; set; }
+
+        private BalancingMethods BalancingMethod { get; set; }
 
         /// <summary>
         /// Return the count of active items
@@ -90,7 +102,7 @@ namespace Common.Standard.Generic
         {
             get
             {
-                var stilActive = ItemPool.Where(i => i.IsActive).Count();
+                var stilActive = ItemPool.Count();
                 return stilActive;
             }
         }
@@ -100,7 +112,7 @@ namespace Common.Standard.Generic
         /// </summary>
         public int Size
         {
-            get { return ItemPool.Length; }
+            get { return ItemPool.Count; }
         }
 
         #endregion
@@ -114,10 +126,13 @@ namespace Common.Standard.Generic
         /// Default Ctor
         /// </summary>
         /// <param name="poolSize">the size of the pool</param>
-        public GenericObjectPool(int poolSize = 10)
+        /// <param name="balancingMethod">When acquiring item which one gets returned</param>
+        public GenericObjectPool(int poolSize = 10, BalancingMethods balancingMethod = BalancingMethods.RoundRobin)
         {
             if(poolSize <= 0)
                 throw new ArgumentOutOfRangeException("poolSize size must be greater than 0");
+
+            BalancingMethod = balancingMethod;
 
             _poolSize = poolSize;
 
@@ -139,26 +154,60 @@ namespace Common.Standard.Generic
         /// Acquire an available item from the Pool
         /// </summary>
         /// <returns>the acquited item (or null if no more are available)</returns>
-        public async Task<T> AcquireItem()
+        public async Task<T> AcquireItem(params object[] activateObjects)
         {
-            T firstFound = null;
+            T firstFound = await FindOrCreateLoader();
 
-            await Task.Run(() =>
-            {
-                var openItems = ItemPool.Where(i => !i.IsActive);
-                if (openItems != null && openItems.Count() > 0)
-                {
-                    firstFound = openItems.ElementAt(0);
-                }
-                else
-                {
-                    var ndx = ExpandPool();
-                    firstFound = _itemPool[ndx];
-                }
+            firstFound.Activate(activateObjects);
 
-                firstFound.Activate();
-            });
             return firstFound;
+        }
+
+        private async Task<T> FindOrCreateLoader()
+        {
+            T firstFound;
+            switch (BalancingMethod)
+            {
+                case BalancingMethods.Random:
+                    if (_loadingRandom == null)
+                    {
+                        _loadingRandom = new Random();
+                    }
+
+                    CurrentIndex = _loadingRandom.Next(0, ItemPool.Count());
+                    break;
+                case BalancingMethods.MaxCount:
+                    int maxedCount = 0;
+                    for (var i = 0; i < ItemPool.Count(); i++)
+                    {
+                        var openItem = ItemPool.ElementAt(i);
+                        if (openItem.ActiveCount >= openItem.MaxCount)
+                            maxedCount++;
+                        else
+                        {
+                            CurrentIndex = i;
+                            break;
+                        }
+                    }
+                    if (maxedCount == ItemPool.Count())
+                    {
+                        var newItem = new T();
+                        ItemPool.Add(newItem);
+                        CurrentIndex = ItemPool.Count() - 1;
+                    }
+                    break;
+                default:
+                    if (CurrentIndex >= ItemPool.Count() )
+                        CurrentIndex = 0;
+                    break;
+            }
+
+
+            firstFound = ItemPool.ElementAt(CurrentIndex);
+
+            CurrentIndex++;
+
+            return await Task.FromResult(firstFound);
         }
 
         /// <summary>
@@ -171,10 +220,7 @@ namespace Common.Standard.Generic
             await Task.Run(() =>
             {
                 var found = ItemPool.First(i => i.Equals(item));
-                if (found.IsActive)
-                {
-                    found?.Deactivate();
-                }
+                found?.Deactivate();
             });
         }
 
@@ -234,62 +280,28 @@ namespace Common.Standard.Generic
             }
         }
 
-        private int ExpandPool()
-        {
-            int ndx = _itemPool.Length;
-
-            List<T> itemList = new List<T>(_itemPool);
-
-
-            for (var i = 0; i < PoolSize; i++)
-            {
-                var newItem = new T();
-
-                itemList.Add(newItem);
-            }
-
-            _itemPool = itemList.ToArray();
-
-            return ndx;
-        }
-
         private void ContractPool()
         {
             if (_itemPool == null)
                 return;
 
-            var stillActiveItems = _itemPool.Where(i => i.IsActive);
-
-            List<T> remainingList = new List<T>(stillActiveItems);
-            foreach (var stillActiveItem in stillActiveItems)
+            if(ItemPool.Count > PoolSize)
             {
-                remainingList.Add(stillActiveItem);
-            }
-
-            if (remainingList.Count <= PoolSize)
-            {
-                _itemPool = null;
-
-                InitPool();
-
-                for (var i = 0; i < remainingList.Count; i++)
+                for(var i = PoolSize -1; i < ItemPool.Count; i++)
                 {
-                    _itemPool[i] = remainingList[i];
+                    ItemPool[i].Dispose();
+                    ItemPool.RemoveAt(i);
                 }
-            }
-            else
-            {
-                _itemPool = remainingList.ToArray();
             }
         }
 
         private void InitPool()
         {
-            _itemPool = new T[PoolSize];
+            _itemPool = new List<T>();
 
             for (var i = 0; i < PoolSize; i++)
             {
-                _itemPool[i] = new T();
+                _itemPool.Add( new T());
             }
         }
         #endregion
@@ -305,7 +317,7 @@ namespace Common.Standard.Generic
         {
             if (!disposedValue)
             {
-                for (var i = 0; i < ItemPool.Length; i++)
+                for (var i = 0; i < ItemPool.Count; i++)
                 {
                     ItemPool[i].Deactivate();
                     ItemPool[i].Dispose();
