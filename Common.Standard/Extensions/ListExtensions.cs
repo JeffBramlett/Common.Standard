@@ -12,6 +12,7 @@ namespace Common.Standard.Extensions
     /// </summary>
     public static class ListExtensions
     {
+
         /// <summary>
         /// Try to find using a predicate from a list (reference types only).  (does null check and does not throw exception)
         /// </summary>
@@ -111,8 +112,6 @@ namespace Common.Standard.Extensions
             {
                 sb.Append('"');
             }
-
-            sb.AppendLine();
 
             return sb.ToString();
         }

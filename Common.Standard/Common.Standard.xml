@@ -410,6 +410,36 @@
             <param name="input">the input</param>
             <param name="response">the response</param>
         </member>
+        <member name="T:Common.Standard.Generic.AbstractBuilder`1">
+            <summary>
+            Abstract of a Builder for objects of type T
+            </summary>
+            <typeparam name="T">the type of object to build</typeparam>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractBuilder`1.#ctor">
+            <summary>
+            Default Ctor
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractBuilder`1.Build(System.Object[])">
+            <summary>
+            Build the object of type T using the build delegates in the sorted order
+            </summary>
+            <param name="args">the arguments to use when building the object</param>
+            <returns>a new object of type T</returns>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractBuilder`1.AddDelegate(System.Func{`0,System.Object[],System.Boolean},System.Int32)">
+            <summary>
+            Add a delegate for the build process
+            </summary>
+            <param name="action">the delegate to use in the building process</param>
+            <param name="ordinal">the sort order of the delegate</param>
+        </member>
+        <member name="M:Common.Standard.Generic.AbstractBuilder`1.Dispose">
+            <summary>
+            Dispose the builder and release the resources
+            </summary>
+        </member>
         <member name="T:Common.Standard.Generic.CircuitBreakerStatuses">
             <summary>
             Status of Circuit Breaker
@@ -701,6 +731,44 @@
             Dispose this instance
             </summary>
         </member>
+        <member name="T:Common.Standard.Generic.AppCommandProcessor">
+            <summary>
+            Execute commands (IAppCommand) asynchronously and in order
+            </summary>
+        </member>
+        <member name="P:Common.Standard.Generic.AppCommandProcessor.Arguments">
+            <summary>
+            Arguments to be passed to each Command
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.AppCommandProcessor.#ctor">
+            <summary>
+            Default Ctor
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.AppCommandProcessor.Finalize">
+            <summary>
+            Finalizer
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.AppCommandProcessor.AddCommand(Common.Standard.Generic.IAppCommand)">
+            <summary>
+            Add a command to be processed
+            </summary>
+            <param name="command">the command to be processed</param>
+            <returns>true if added, false is the add failed</returns>
+        </member>
+        <member name="M:Common.Standard.Generic.AppCommandProcessor.Init(System.Object[])">
+            <summary>
+            Initialize this instance of the AppCommandProcessor
+            </summary>
+            <param name="args">arguments to be passed to each command</param>
+        </member>
+        <member name="M:Common.Standard.Generic.AppCommandProcessor.AdditionalDispose">
+            <summary>
+            Virtual dispose addition that is called in the private dispose(bool) method
+            </summary>
+        </member>
         <member name="T:Common.Standard.Generic.BreakerStatusChangedEventArgs">
             <summary>
             EventArgs for Breaker status change
@@ -854,7 +922,7 @@
             Based on: https://www.oodesign.com/object-pool-pattern.html
             </remarks>
         </member>
-        <member name="M:Common.Standard.Generic.IGenericObjectPool`1.AcquireItem">
+        <member name="M:Common.Standard.Generic.IGenericObjectPool`1.AcquireItem(System.Object[])">
             <summary>
             Acquire an available item from the Pool
             </summary>
@@ -917,7 +985,7 @@
             Finalizer for Object Pool
             </summary>
         </member>
-        <member name="M:Common.Standard.Generic.GenericObjectPool`1.AcquireItem">
+        <member name="M:Common.Standard.Generic.GenericObjectPool`1.AcquireItem(System.Object[])">
             <summary>
             Acquire an available item from the Pool
             </summary>
@@ -1182,6 +1250,43 @@
             <param name="listOfFunctions">the func array to execute in parallel</param>
             <returns>the first returned item that is not null, null or default if they all return null</returns>
         </member>
+        <member name="T:Common.Standard.Generic.IAppCommand">
+            <summary>
+            Contract for an command execution in an application context
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.IAppCommand.CanExecute(System.Object[])">
+            <summary>
+            Use the arguments to determine if the command can be executed
+            </summary>
+            <param name="args">the arguments to used to determine if this command can be executed</param>
+            <returns>true if the command can be executed</returns>
+        </member>
+        <member name="M:Common.Standard.Generic.IAppCommand.Execute(System.Object[])">
+            <summary>
+            Execute the command using the arguments supplied
+            </summary>
+            <param name="args">the collection of argument objects</param>
+            <returns>void</returns>
+        </member>
+        <member name="T:Common.Standard.Generic.IAppCommandProcessor">
+            <summary>
+            Contract for command execution in an application context
+            </summary>
+        </member>
+        <member name="M:Common.Standard.Generic.IAppCommandProcessor.Init(System.Object[])">
+            <summary>
+            Initialize the processor with a collection of arguments
+            </summary>
+            <param name="args">collection of arguments</param>
+        </member>
+        <member name="M:Common.Standard.Generic.IAppCommandProcessor.AddCommand(Common.Standard.Generic.IAppCommand)">
+            <summary>
+            Add a command to be executed by the processor
+            </summary>
+            <param name="command">the command to execute</param>
+            <returns>true if successfully added</returns>
+        </member>
         <member name="T:Common.Standard.Generic.IDelegateMessageBus">
             <summary>
             Contract for a message bus that uses a delegate
@@ -1216,6 +1321,19 @@
             <summary>
             Release all resources and remove
             </summary>
+        </member>
+        <member name="T:Common.Standard.Generic.IGenericBuilder`1">
+            <summary>
+            Generic Builder contract (Builder design pattern)
+            </summary>
+            <typeparam name="T">type to be built</typeparam>
+        </member>
+        <member name="M:Common.Standard.Generic.IGenericBuilder`1.Build(System.Object[])">
+            <summary>
+            Build a instance of type T using some arguments
+            </summary>
+            <param name="args">arguments for building an object of type T</param>
+            <returns>the new object of type T</returns>
         </member>
         <member name="T:Common.Standard.Generic.IGenericSpooler`1">
             <summary>
@@ -1271,11 +1389,6 @@
             The contract for a PoolItem
             </summary>
         </member>
-        <member name="P:Common.Standard.Generic.IPoolItem.IsActive">
-            <summary>
-            The PoolItem is active (true) or not active (false)
-            </summary>
-        </member>
         <member name="P:Common.Standard.Generic.IPoolItem.ActiveCount">
             <summary>
             The current execution count
@@ -1286,7 +1399,7 @@
             The maximum count of unfinished executions
             </summary>
         </member>
-        <member name="M:Common.Standard.Generic.IPoolItem.Activate">
+        <member name="M:Common.Standard.Generic.IPoolItem.Activate(System.Object[])">
             <summary>
             Activate the PoolItem
             </summary>

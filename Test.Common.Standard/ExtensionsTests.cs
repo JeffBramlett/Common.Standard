@@ -7,14 +7,26 @@ using System.Threading;
 
 namespace Test.Common.Standard
 {
-    public class UnitTests
+    public class ExtensionsTests
     {
         [Fact]
-        public void TestListExtension_ToCommaDelimited()
+        public void TestListExtension_ToCommaDelimited_withQuotes()
         {
             List<int> inputList = new List<int>() {1, 2, 3, 4, 5};
 
             string delimited = inputList.ToCommaDelimited(true);
+
+            Assert.Equal("\"1\",\"2\",\"3\",\"4\",\"5\"", delimited);
+        }
+
+        [Fact]
+        public void TestListExtension_ToCommaDelimited_withoutQuotes()
+        {
+            List<int> inputList = new List<int>() { 1, 2, 3, 4, 5 };
+
+            string delimited = inputList.ToCommaDelimited(false);
+
+            Assert.Equal("1,2,3,4,5", delimited);
         }
 
         [Fact]

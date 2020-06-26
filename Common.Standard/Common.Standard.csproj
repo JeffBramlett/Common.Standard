@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -13,7 +13,10 @@
     <RepositoryUrl>https://github.com/JeffBramlett/Common.Standard</RepositoryUrl>
     <RepositoryType>GitHub</RepositoryType>
     <PackageTags>common,generics,extensions.toggles,serviceloader,messagebus,pipes and filters,circuitbreaker,ambassador</PackageTags>
-    <PackageReleaseNotes>Added Consistent Hash Ring
+    <PackageReleaseNotes>- Added Generic Builder (builder design pattern) abstractions
+- Added Command execution (Command design pattern) abstractions
+- Added Load balancing to GenericObjectPool
+- Added Consistent Hash Ring
 - Updated GenericPool to expand/contract
 - Added ConsoleWriter
 - Added Generic Pool
@@ -31,9 +34,9 @@
 * added List&lt;/T&gt; extension "TryFindValue(predicate, out T found): Try to find using a predicate from a list.  (does null check and does not throw exception)
 * added List&lt;T&gt; extension "TryFindAll for using one or more predicates to find items in a list (does null check and does not throw exception)
 * - Changed ServiceLoader to recursively load from the starting path</PackageReleaseNotes>
-    <Version>1.0.15</Version>
-    <AssemblyVersion>1.0.15.0</AssemblyVersion>
-    <FileVersion>1.0.15.0</FileVersion>
+    <Version>1.0.19</Version>
+    <AssemblyVersion>1.0.19.0</AssemblyVersion>
+    <FileVersion>1.0.19.0</FileVersion>
     <PackageIconUrl>https://bluejaywebsvc.com/images/bluejaylogo.png</PackageIconUrl>
   </PropertyGroup>
 
