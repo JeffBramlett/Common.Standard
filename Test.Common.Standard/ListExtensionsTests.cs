@@ -1,14 +1,45 @@
 using System;
 using System.Collections.Generic;
 using Xunit;
-using   Common.Standard.Extensions;
+using Common.Standard.Extensions;
 using Common.Standard.Generic;
 using System.Threading;
 
 namespace Test.Common.Standard
 {
-    public class ExtensionsTests
+    public class ListExtensionsTests
     {
+        [Fact]
+        public void TestListExtension_TryFindItem()
+        {
+            List<string> inputList = new List<string>() { "1", "2", "3", "4", "5" };
+            string foundInt;
+            var foundSome = inputList.TryFindItem((x) => x == "3", out foundInt);
+
+            Assert.True(foundSome);
+        }
+
+        [Fact]
+        public void TestListExtension_TryFindValue()
+        {
+            List<int> inputList = new List<int>() { 1, 2, 3, 4, 5 };
+            int foundInt;
+            var foundSome = inputList.TryFindValue((x) => x == 3, out foundInt);
+
+            Assert.True(foundSome);
+        }
+
+
+        [Fact]
+        public void TestListExtension_TryFindAll()
+        {
+            List<int> inputList = new List<int>() { 1, 2, 3, 4, 5 };
+            IList<int> greaterList;
+            var foundSome = inputList.TryFindAll(out greaterList, (x) => x > 2);
+
+            Assert.True(foundSome);
+        }
+
         [Fact]
         public void TestListExtension_ToCommaDelimited_withQuotes()
         {
@@ -28,6 +59,42 @@ namespace Test.Common.Standard
 
             Assert.Equal("1,2,3,4,5", delimited);
         }
+
+
+        [Fact]
+        public void TestListExtension_ApplyAction()
+        {
+            List<int> inputList = new List<int>() { 1, 2, 3, 4, 5 };
+
+            int sum = 0;
+
+            var result =  inputList.ApplyAction((x) => 
+            {
+                sum += x; 
+            }, 1).Result;
+
+            Assert.Equal(15, sum);
+        }
+
+        [Fact]
+        public void TestListExtension_ApplyFunction()
+        {
+            List<int> inputList = new List<int>() { 1, 2, 3, 4, 5 };
+
+            int sum = 0;
+
+            var result = inputList.ApplyFunction((x) =>
+            {
+                return x * 2;
+            }, 1).Result;
+
+            Assert.Equal(2, result[0]);
+            Assert.Equal(4, result[1]);
+            Assert.Equal(6, result[2]);
+            Assert.Equal(8, result[3]);
+            Assert.Equal(10, result[4]);
+        }
+
 
         [Fact]
         public void TestFirstReturn()
@@ -98,28 +165,10 @@ namespace Test.Common.Standard
             Assert.True(r == 15);
         }
 
-        [Fact]
-        public void TestSerialization_DataTypes()
-        {
-            string testOfString = "string test";
+    }
 
-            string asJson = testOfString.ToJson();
-            string asXml = testOfString.ToXml();
-        }
-
-        [Fact]
-        public void TestSerialization_RefTypes()
-        {
-            Something testOfRef = new Something()
-            { Id = 2 };
-
-            string asJson = testOfRef.ToJson();
-            string asXml = testOfRef.ToXml();
-        }
-
-        public class Something
-        {
-            public int Id { get; set; }
-        }
+    public class Something
+    {
+        public int Id { get; set; }
     }
 }

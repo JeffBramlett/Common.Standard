@@ -11,7 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleIntegrationTests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleProxyGenerator", "ConsoleProxyGenerator\ConsoleProxyGenerator.csproj", "{49F2EAB9-9A15-4BC0-989B-5829F96E94C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsolePoolIntoDb", "ConsolePoolIntoDb\ConsolePoolIntoDb.csproj", "{79E51B9B-5767-4105-861C-464139D2EBFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsolePoolIntoDb", "ConsolePoolIntoDb\ConsolePoolIntoDb.csproj", "{79E51B9B-5767-4105-861C-464139D2EBFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HashRingIntegrationTest", "HashRingIntegrationTest\HashRingIntegrationTest.csproj", "{FB5EF8A8-3492-4297-B0C8-05A58A9B7084}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{79E51B9B-5767-4105-861C-464139D2EBFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79E51B9B-5767-4105-861C-464139D2EBFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79E51B9B-5767-4105-861C-464139D2EBFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB5EF8A8-3492-4297-B0C8-05A58A9B7084}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB5EF8A8-3492-4297-B0C8-05A58A9B7084}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB5EF8A8-3492-4297-B0C8-05A58A9B7084}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB5EF8A8-3492-4297-B0C8-05A58A9B7084}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

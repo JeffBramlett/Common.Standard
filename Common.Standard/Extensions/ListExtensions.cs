@@ -50,7 +50,7 @@ namespace Common.Standard.Extensions
                 found = list.Find(predicate);
             }
 
-            return EqualityComparer<T>.Default.Equals(found, default(T));
+            return !EqualityComparer<T>.Default.Equals(found, default(T));
         }
 
         /// <summary>

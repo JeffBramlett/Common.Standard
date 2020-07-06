@@ -12,33 +12,34 @@ namespace ConsistentHashRing
     /// Storage node for Items of type T
     /// </summary>
     /// <typeparam name="T">the type of item to store in the location</typeparam>
-    public class HashRingLocation<T>: HashRingNode<T>, INotifyPropertyChanged
+    public class HashRingLocation<T> : IHashRingLocation<T>
     {
-        #region Fields
-        private SortedDictionary<UInt32, HashRingNode<T>> _nodeDictionary;
+        private bool disposedValue;
+        #region Events and Delegates
+        public delegate void ReceivedItemDelegate(UInt32 key, T itemReceived);
+        public event ReceivedItemDelegate ReceivedItem;
         #endregion
 
         #region Properties
-        public int DuplicateCount { get; set; }
-        public SortedDictionary<UInt32, HashRingNode<T>> NodeDictionary
-        {
-            get
-            {
-                _nodeDictionary = _nodeDictionary ?? new SortedDictionary<uint, HashRingNode<T>>();
-                return _nodeDictionary;
-            }
-        }
+        /// <summary>
+        /// Unique key for this Node
+        /// </summary>
+        public UInt32 Key { get; set; }
 
-        public List<HashRingNode<T>> Nodes
-        {
-            get
-            {
-                return NodeDictionary.Values.ToList();
-            }
-        }
+        /// <summary>
+        /// The contained "payload"
+        /// </summary>
+        public T Item { get; set; }
+
+
         #endregion
 
         #region Ctors and Dtors
+        /// <summary>
+        /// Default Ctor (must have key and item
+        /// </summary>
+        /// <param name="key">the key for the hash rign location</param>
+        /// <param name="item">the item to define the key</param>
         public HashRingLocation(UInt32 key, T item)
         {
             Key = key;
@@ -46,101 +47,25 @@ namespace ConsistentHashRing
         }
         #endregion
 
-        #region Public Item Accessor and Iterator
-        public int ItemCount
+        #region 
+        /// <summary>
+        /// Add the item (raises the ReceivedItem event from the location)
+        /// </summary>
+        /// <param name="item">the item to use</param>
+        public void AddToRing(T item)
         {
-            get { return NodeDictionary.Count + DuplicateCount; }
-        }
-
-        public void ShowIt()
-        {
-            RaisePropertyChanged(() => Nodes);
+            RaiseItemReceived(item).Wait();
         }
         #endregion
 
-
-        #region Protected INotifyPropertyChanged Implementation
-
-        /// <summary>
-        /// Property changed event
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Set the property and notifies any listeners that it changed (if it did)
-        /// </summary>
-        /// <typeparam name="T">the type of the property (can be inferred from arguments)</typeparam>
-        /// <param name="field">the backing field variable name</param>
-        /// <param name="value">the new value</param>
-        /// <param name="memberExpression">the anonymous expression of the property</param>
-        /// <param name="moreNotifications">other notifications is needed (does not set any values)</param>
-        protected void SetProperty<T>(ref T field, T value, Expression<Func<T>> memberExpression, params Expression<Func<object>>[] moreNotifications)
+        #region Raise Event
+        private async Task RaiseItemReceived(T item)
         {
-            // Must have member expression to find property name
-            if (memberExpression == null)
+            await Task.Run(() =>
             {
-                throw new ArgumentNullException();
-            }
-
-            var bodyExpr = memberExpression.Body as MemberExpression;
-
-            // Member expression must have a body (a property)
-            if (bodyExpr == null)
-            {
-                throw new ArgumentNullException();
-            }
-
-            // don't do anything unless the value changes
-            if (EqualityComparer<T>.Default.Equals(field, value))
-            {
-                return;
-            }
-
-            field = value;
-
-            RaisePropertyChanged(memberExpression, moreNotifications);
+                ReceivedItem?.Invoke(Key, item);
+            });
         }
-
-        /// <summary>
-        /// Raise property changed by names only (value needs to be reread)
-        /// </summary>
-        /// <typeparam name="T">the type of the property (can be inferred from arguments)</typeparam>
-        /// <param name="memberExpression">the anonymous expression of the property</param>
-        /// <param name="moreNotifications">other notifications is needed (does not set any values)</param>
-        protected void RaisePropertyChanged<T>(Expression<Func<T>> memberExpression, params Expression<Func<object>>[] moreNotifications)
-        {
-            // Must have member expression to find property name
-            if (memberExpression == null)
-            {
-                throw new ArgumentNullException();
-            }
-
-            var bodyExpr = memberExpression.Body as MemberExpression;
-
-            // Member expression must have a body (a property)
-            if (bodyExpr == null)
-            {
-                throw new ArgumentNullException();
-            }
-
-            var handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(bodyExpr.Member.Name));
-                foreach (Expression<Func<object>> notifyAlso in moreNotifications)
-                {
-                    if (notifyAlso != null)
-                    {
-                        var alsoExpr = notifyAlso.Body as MemberExpression;
-                        handler(this, new PropertyChangedEventArgs(alsoExpr.Member.Name));
-                    }
-
-                }
-            }
-        }
-
         #endregion
-
     }
 }
