@@ -7,6 +7,9 @@ using Common.Standard.Generic;
 
 namespace ConsoleIntegrationTests
 {
+    /// <summary>
+    /// Extending class for Ambassador
+    /// </summary>
     class TestingAmbassador : AbstractAmbassador<string, int>
     {
         protected override int ExecuteOnEachInput(string input)

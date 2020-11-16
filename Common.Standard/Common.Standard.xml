@@ -1758,6 +1758,12 @@
             </summary>
             <param name="item">the item to add</param>
         </member>
+        <member name="M:ConsistentHashRing.HashRing`1.AddLocation(ConsistentHashRing.IHashRingLocation{`0})">
+            <summary>
+            Add a HashRingLocation to the HashRing
+            </summary>
+            <param name="location">the HashRingLocation</param>
+        </member>
         <member name="M:ConsistentHashRing.HashRing`1.HasLocation(`0)">
             <summary>
             is there a location for this item
@@ -1765,7 +1771,7 @@
             <param name="item">the item</param>
             <returns>true if there is a location, false otherwise</returns>
         </member>
-        <member name="M:ConsistentHashRing.HashRing`1.RemoveLocation(`0)">
+        <member name="M:ConsistentHashRing.HashRing`1.RemoveLocation(ConsistentHashRing.IHashRingLocation{`0})">
             <summary>
             Remove the locations and remap the items it contains
             </summary>
@@ -1776,46 +1782,11 @@
             How many locations does this HashRing have
             </summary>
         </member>
-        <member name="M:ConsistentHashRing.HashRing`1.LocationAt(System.Int32)">
-            <summary>
-            Get the location for the index
-            </summary>
-            <param name="index">the index of the location</param>
-            <returns>the location at the index</returns>
-        </member>
-        <member name="M:ConsistentHashRing.HashRing`1.LocationIndexFor(`0)">
-            <summary>
-            Get the index for the location item
-            </summary>
-            <param name="item"></param>
-            <returns></returns>
-        </member>
         <member name="M:ConsistentHashRing.HashRing`1.AddItem(`0)">
             <summary>
             Add an Item to the HashRing
             </summary>
             <param name="item">the item to add</param>
-        </member>
-        <member name="M:ConsistentHashRing.HashRing`1.RemoveItem(`0)">
-            <summary>
-            Remove the item from the HashRing
-            </summary>
-            <param name="item">the item to remove</param>
-        </member>
-        <member name="M:ConsistentHashRing.Extensions.ThrowIfNull(System.Object)">
-            <summary>
-            Throw ArgumentNullException if the object is null
-            </summary>
-            <param name="obj">the object itself</param>
-        </member>
-        <member name="M:ConsistentHashRing.Extensions.IndexOfKey``1(System.Collections.Generic.SortedDictionary{System.UInt32,ConsistentHashRing.HashRingLocation{``0}},System.UInt32)">
-            <summary>
-            Find the index of the key in the HashRingLocation
-            </summary>
-            <typeparam name="T">the type of the item</typeparam>
-            <param name="sortedDict">the extension class</param>
-            <param name="keyToFind">the key to find</param>
-            <returns></returns>
         </member>
         <member name="T:ConsistentHashRing.HashRingLocation`1">
             <summary>
@@ -1823,72 +1794,28 @@
             </summary>
             <typeparam name="T">the type of item to store in the location</typeparam>
         </member>
-        <member name="E:ConsistentHashRing.HashRingLocation`1.PropertyChanged">
-            <summary>
-            Property changed event
-            </summary>
-        </member>
-        <member name="M:ConsistentHashRing.HashRingLocation`1.SetProperty``1(``0@,``0,System.Linq.Expressions.Expression{System.Func{``0}},System.Linq.Expressions.Expression{System.Func{System.Object}}[])">
-            <summary>
-            Set the property and notifies any listeners that it changed (if it did)
-            </summary>
-            <typeparam name="T">the type of the property (can be inferred from arguments)</typeparam>
-            <param name="field">the backing field variable name</param>
-            <param name="value">the new value</param>
-            <param name="memberExpression">the anonymous expression of the property</param>
-            <param name="moreNotifications">other notifications is needed (does not set any values)</param>
-        </member>
-        <member name="M:ConsistentHashRing.HashRingLocation`1.RaisePropertyChanged``1(System.Linq.Expressions.Expression{System.Func{``0}},System.Linq.Expressions.Expression{System.Func{System.Object}}[])">
-            <summary>
-            Raise property changed by names only (value needs to be reread)
-            </summary>
-            <typeparam name="T">the type of the property (can be inferred from arguments)</typeparam>
-            <param name="memberExpression">the anonymous expression of the property</param>
-            <param name="moreNotifications">other notifications is needed (does not set any values)</param>
-        </member>
-        <member name="T:ConsistentHashRing.HashRingNode`1">
-            <summary>
-            Node on the Hashring
-            </summary>
-            <typeparam name="T">the type to be contained in the node</typeparam>
-        </member>
-        <member name="P:ConsistentHashRing.HashRingNode`1.Key">
+        <member name="P:ConsistentHashRing.HashRingLocation`1.Key">
             <summary>
             Unique key for this Node
             </summary>
         </member>
-        <member name="P:ConsistentHashRing.HashRingNode`1.Item">
+        <member name="P:ConsistentHashRing.HashRingLocation`1.Item">
             <summary>
             The contained "payload"
             </summary>
         </member>
-        <member name="P:ConsistentHashRing.HashRingNode`1.Next">
+        <member name="M:ConsistentHashRing.HashRingLocation`1.#ctor(System.UInt32,`0)">
             <summary>
-            The next node (if the key is the same)
+            Default Ctor (must have key and item
             </summary>
+            <param name="key">the key for the hash rign location</param>
+            <param name="item">the item to define the key</param>
         </member>
-        <member name="E:ConsistentHashRing.HashRingNode`1.PropertyChanged">
+        <member name="M:ConsistentHashRing.HashRingLocation`1.AddToRing(`0)">
             <summary>
-            Property changed event
+            Add the item (raises the ReceivedItem event from the location)
             </summary>
-        </member>
-        <member name="M:ConsistentHashRing.HashRingNode`1.SetProperty``1(``0@,``0,System.Linq.Expressions.Expression{System.Func{``0}},System.Linq.Expressions.Expression{System.Func{System.Object}}[])">
-            <summary>
-            Set the property and notifies any listeners that it changed (if it did)
-            </summary>
-            <typeparam name="T">the type of the property (can be inferred from arguments)</typeparam>
-            <param name="field">the backing field variable name</param>
-            <param name="value">the new value</param>
-            <param name="memberExpression">the anonymous expression of the property</param>
-            <param name="moreNotifications">other notifications is needed (does not set any values)</param>
-        </member>
-        <member name="M:ConsistentHashRing.HashRingNode`1.RaisePropertyChanged``1(System.Linq.Expressions.Expression{System.Func{``0}},System.Linq.Expressions.Expression{System.Func{System.Object}}[])">
-            <summary>
-            Raise property changed by names only (value needs to be reread)
-            </summary>
-            <typeparam name="T">the type of the property (can be inferred from arguments)</typeparam>
-            <param name="memberExpression">the anonymous expression of the property</param>
-            <param name="moreNotifications">other notifications is needed (does not set any values)</param>
+            <param name="item">the item to use</param>
         </member>
         <member name="M:ProxyGeneration.Dto.ProxyExtraction.#ctor">
             <summary>

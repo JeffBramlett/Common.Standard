@@ -23,30 +23,7 @@ namespace Common.Standard.Generic
         /// </summary>
         readonly ConcurrentQueue<ItemMetaData> _inputs;
 
-        /// <summary>
-        /// The worker thread that supplies each item to the callback
-        /// </summary>
-        Thread _processWorkerThread;
-
-        /// <summary>
-        /// Wait handles to control process flow
-        /// </summary>
-        readonly WaitHandle[] _operationHandles;
-
-        /// <summary>
-        /// Traffic stop/go control event
-        /// </summary>
-        AutoResetEvent _trafficEvent;
-
-        /// <summary>
-        /// Signal this event to stop the spooler and exit the process thread
-        /// </summary>
-        AutoResetEvent _exitEvent;
-
-        /// <summary>
-        /// Pause/Resume control event
-        /// </summary>
-        ManualResetEvent _itemActionEvent;
+        Task _processWorkerTask;
 
         #endregion
 
@@ -60,6 +37,12 @@ namespace Common.Standard.Generic
             {
                 return _inputs.Count > 0;
             }
+        }
+
+
+        private CancellationTokenSource CancelToken
+        {
+            get; set;
         }
         #endregion
 
@@ -105,14 +88,7 @@ namespace Common.Standard.Generic
         public GenericSpooler()
         {
             _inputs = new ConcurrentQueue<ItemMetaData>();
-
-            _trafficEvent = new AutoResetEvent(false);
-            _exitEvent = new AutoResetEvent(false);
-            _itemActionEvent = new ManualResetEvent(true);
-
-            _operationHandles = new WaitHandle[2];
-            _operationHandles[0] = _trafficEvent;
-            _operationHandles[1] = _exitEvent;
+            CancelToken = new CancellationTokenSource();
         }
 
         /// <summary>
@@ -143,7 +119,6 @@ namespace Common.Standard.Generic
 
                 _inputs.Enqueue(storedItem);
                 StartProcess();
-                _trafficEvent.Set();
             }
             catch (Exception ex)
             {
@@ -178,15 +153,11 @@ namespace Common.Standard.Generic
         {
             try
             {
-                _itemActionEvent.Reset();
-
                 ItemMetaData ignoredData;
                 while (_inputs.TryDequeue(out ignoredData))
                 {
                     // do nothing; just clear the queue
                 }
-
-                _itemActionEvent.Set();
             }
             catch (Exception ex)
             {
@@ -201,7 +172,7 @@ namespace Common.Standard.Generic
         {
             try
             {
-                _itemActionEvent.Reset();
+                CancelToken.Cancel();
             }
             catch (Exception ex)
             {
@@ -216,7 +187,8 @@ namespace Common.Standard.Generic
         {
             try
             {
-                _itemActionEvent.Set();
+                CancelToken = new CancellationTokenSource();
+                ProcessWhileHasInput(CancelToken.Token);
             }
             catch (Exception ex)
             {
@@ -256,54 +228,36 @@ namespace Common.Standard.Generic
         /// </summary>
         private void StartProcess()
         {
-            if (_processWorkerThread == null)
+            if(_processWorkerTask == null 
+                || _processWorkerTask.IsCompleted 
+                || _processWorkerTask.IsCanceled
+                || _processWorkerTask.IsFaulted)
             {
-                _processWorkerThread = new Thread(ProcessWhileHasInput);
-                _processWorkerThread.Start();
+                CancelToken = new CancellationTokenSource();
+                _processWorkerTask = Task.Factory.StartNew(() => ProcessWhileHasInput(CancelToken.Token), CancelToken.Token);
             }
         }
 
-        /// <summary>
-        /// The method the thread executes.  The thread executes the Callback delegate for each item it takes off the queue.
-        /// </summary>
-        private void ProcessWhileHasInput()
+        private void ProcessWhileHasInput(CancellationToken cancelToken)
         {
             try
             {
+                if (cancelToken.IsCancellationRequested)
+                    return;
+
                 // Keep the thread alive unless the exit event is signaled
-                while (true)
+                ItemMetaData itemData;
+                while (_inputs.TryDequeue(out itemData))
                 {
-                    int iWaitEvent = WaitHandle.WaitAny(_operationHandles);
-
-                    if (_operationHandles[iWaitEvent] == _trafficEvent)
+                    if(itemData.HoldOnItem)
                     {
-                        ItemMetaData itemData;
-                        while (_inputs.TryDequeue(out itemData))
-                        {
-                            // allow stop/resume using itemActionEvent signaling
-                            if (_itemActionEvent.WaitOne())
-                            {
-                                try
-                                {
-                                    if (itemData.HoldOnItem)
-                                        _itemActionEvent.Reset();
-
-                                    RaiseItemSpooledEvent(itemData.Item);
-                                }
-                                catch (Exception ex)
-                                {
-                                    RaiseException(this, ex);
-                                }
-                            }
-                        }
-
-                        SpoolerEmpty?.Invoke();
+                        Stop();
+                        return;
                     }
-                    else if (_operationHandles[iWaitEvent] == _exitEvent)
-                    {
-                        break;
-                    }
+                    RaiseItemSpooledEvent(itemData.Item);
                 }
+
+                SpoolerEmpty?.Invoke();
             }
             catch (Exception ex)
             {
@@ -345,12 +299,6 @@ namespace Common.Standard.Generic
             // General cleanup logic here
             GeneralDispose();
 
-            // if the process is paused, release it
-            _itemActionEvent.Set();
-
-            // Signal the thread to end and exit
-            _exitEvent.Set();
-
             if (disposing) // Deterministic only cleanup
             {
                 DeterministicDispose();
@@ -358,14 +306,16 @@ namespace Common.Standard.Generic
             else // Finalizer only cleanup
             {
                 FinalizeDispose();
-
             }
 
-            // if the worker thread is still running, abort it!
-            if (_processWorkerThread != null)
-                _processWorkerThread.Interrupt();
+            // if the worker task is still running, abort it!
+            if(CancelToken != null)
+            {
+                CancelToken.Cancel();
+                CancelToken.Dispose();
+            }
 
-            _processWorkerThread = null;
+            _processWorkerTask = null;
 
             _isDisposed = true;
         }

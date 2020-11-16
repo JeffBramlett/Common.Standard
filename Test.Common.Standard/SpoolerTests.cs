@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Test.Common.Standard
@@ -40,6 +41,34 @@ namespace Test.Common.Standard
             }
 
             Thread.Sleep(100);
+
+            Assert.Equal(max, count);
+        }
+
+        [Fact]
+        public void SpoolerEventExecutes_Pause_Test()
+        {
+            int count = 0;
+            int max = 10;
+
+            GenericSpooler<string> spooler = new GenericSpooler<string>();
+            spooler.ItemSpooled += (item) => { count++;  };
+
+            for (var i = 0; i < max; i++)
+            {
+                spooler.AddItem("Item" + i);
+
+                if(i == 4)
+                {
+                    spooler.Stop();
+                }
+            }
+
+            Assert.True(count < 10, $"Count={count} < {max}");
+
+            Task.Delay(100);
+
+            spooler.Resume();
 
             Assert.Equal(max, count);
         }

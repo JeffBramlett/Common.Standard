@@ -97,6 +97,8 @@ namespace ConsolePoolIntoDb
                 cmd.ExecuteNonQuery();
             }
             ActiveCount--;
+
+            Console.WriteLine($"Insert completed and active count is now {ActiveCount}");
         }
 
         private bool IsActivated { get; set; }
@@ -142,6 +144,8 @@ namespace ConsolePoolIntoDb
         {
             Spooler.AddItem(strings);
             ActiveCount++;
+
+            Console.WriteLine("Spooled");
         }
 
         public void Activate(params object[] startupObjects)
@@ -153,12 +157,18 @@ namespace ConsolePoolIntoDb
                 ConnectionString = startupObjects[0].ToString();
                 IsActivated = true;
             }
-                IsActive = true;
+
+            Console.WriteLine("Activated");
+
+            IsActive = true;
         }
 
         public void Deactivate()
         {
             IsActive = false;
+
+            Console.WriteLine("De-Activated");
+
         }
 
 
