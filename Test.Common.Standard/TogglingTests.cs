@@ -47,13 +47,13 @@ namespace Test.Common.Standard
                 {
                     Key = "T1",
                     IsEnabled = true,
-                    Start = DateTime.Now - TimeSpan.FromSeconds(5)
+                    Start = DateTime.Today
                 },
                 new Toggle()
                 {
                     Key = "T2",
                     IsEnabled = true,
-                    Start = DateTime.Now - TimeSpan.FromSeconds(5)
+                    Start = DateTime.Today
                 }
 
             };

@@ -26,7 +26,13 @@ namespace ConsoleIntegrationTests
 
             //AmbassadorTest();
 
-            TestGenericPool();
+            //TestGenericPool();
+            TestCircuitBreakerExtensions();
+
+            Console.WriteLine();
+            Console.WriteLine("Press any key to quit");
+            Console.ReadKey();
+            Console.WriteLine("Exiting");
         }
 
         private static void ToggleTest()
@@ -121,6 +127,29 @@ namespace ConsoleIntegrationTests
                 return _test;
 
             return 0;
+        }
+
+        private static void TestCircuitBreakerExtensions()
+        {
+            Console.WriteLine($"Testing Circuit Breaker extensions");
+            var obj = new Object();
+
+            var start = DateTime.Now;
+
+            obj.ExecuteActionOrTimeout(TimeSpan.FromSeconds(20), () =>
+            {
+                DateTime longEnd = DateTime.Now + TimeSpan.FromSeconds(5);
+                while(DateTime.Now < longEnd)
+                {
+                    Console.Write(".");
+                    Thread.Sleep(1000);
+                }
+            },
+            (response) => { Console.WriteLine(response); });
+
+            var end = DateTime.Now;
+
+            Console.WriteLine($"Circuit ended in {end - start}");
         }
 
         private static void TestCircuitBreakerObj()

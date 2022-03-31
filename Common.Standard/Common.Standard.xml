@@ -285,6 +285,25 @@
             <param name="obj">the object itself</param>
             <returns>the object serialized to Xml</returns>
         </member>
+        <member name="M:Common.Standard.Extensions.ObjectExtensions.TimeoutAction(System.Object,System.TimeSpan,System.Action)">
+            <summary>
+            Execute Action and terminate if the timeout occurs before the action completes
+            </summary>
+            <param name="obj">object extended not used in method</param>
+            <param name="timeout">the timeout period</param>
+            <param name="action">the action delegate to execute</param>
+        </member>
+        <member name="M:Common.Standard.Extensions.ObjectExtensions.TimeoutFunction``1(System.Object,System.TimeSpan,System.Func{``0},``0)">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="obj"></param>
+            <param name="timeout"></param>
+            <param name="function"></param>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
         <member name="T:Common.Standard.Generic.IAmbassador`2">
             <summary>
             Contract:
@@ -1078,31 +1097,6 @@
             Threadsafe collection class
             </summary>
         </member>
-        <member name="F:Common.Standard.Generic.GenericSpooler`1._processWorkerThread">
-            <summary>
-            The worker thread that supplies each item to the callback
-            </summary>
-        </member>
-        <member name="F:Common.Standard.Generic.GenericSpooler`1._operationHandles">
-            <summary>
-            Wait handles to control process flow
-            </summary>
-        </member>
-        <member name="F:Common.Standard.Generic.GenericSpooler`1._trafficEvent">
-            <summary>
-            Traffic stop/go control event
-            </summary>
-        </member>
-        <member name="F:Common.Standard.Generic.GenericSpooler`1._exitEvent">
-            <summary>
-            Signal this event to stop the spooler and exit the process thread
-            </summary>
-        </member>
-        <member name="F:Common.Standard.Generic.GenericSpooler`1._itemActionEvent">
-            <summary>
-            Pause/Resume control event
-            </summary>
-        </member>
         <member name="P:Common.Standard.Generic.GenericSpooler`1.HasMore">
             <summary>
             True if there are Currently more items in the queue
@@ -1196,11 +1190,6 @@
         <member name="M:Common.Standard.Generic.GenericSpooler`1.StartProcess">
             <summary>
             Starts the thread that spools the items off the queue (if not yet started)
-            </summary>
-        </member>
-        <member name="M:Common.Standard.Generic.GenericSpooler`1.ProcessWhileHasInput">
-            <summary>
-            The method the thread executes.  The thread executes the Callback delegate for each item it takes off the queue.
             </summary>
         </member>
         <member name="M:Common.Standard.Generic.GenericSpooler`1.RaiseException(System.Object,System.Exception)">

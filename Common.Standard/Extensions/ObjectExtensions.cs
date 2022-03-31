@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
 
@@ -112,5 +115,50 @@ namespace Common.Standard.Extensions
 
             }
         }
+
+        #region Circuit Breakers
+        /// <summary>
+        /// Execute a delegate and if it does not finish in the timeout period then terminate it
+        /// </summary>
+        /// <param name="obj">the extension object</param>
+        /// <param name="timeout">the amount of time to wait before terminating the action</param>
+        /// <param name="action">the delegate to execute</param>
+        /// <param name="responseDelegate">(optional) delgate to receive reporting text on how the action finished</param>
+        /// <returns>True if the action delegate completes and false otherwise</returns>
+        /// <exception cref="AggregateException">Aggregates exceptions thrown in the action delegate(see InnerExceptions)</exception>
+        public static bool ExecuteActionOrTimeout(this object obj, TimeSpan timeout, Action action, Action<string> responseDelegate = null)
+        {
+            DateTime end = DateTime.Now + timeout;
+
+            TaskFactory factory = new TaskFactory();
+            var cancelSource = new System.Threading.CancellationTokenSource(timeout);
+
+            var task = factory.StartNew(action, cancelSource.Token);
+            while (DateTime.Now < end)
+            {
+                if (task.IsCanceled)
+                {
+                    responseDelegate?.Invoke($"\n{action.Target}.{action.Method} cancelled before timeout");
+                    return false;
+                }
+                else if (task.IsFaulted)
+                {
+                    responseDelegate?.Invoke($"\n{action.Target}.{action.Method} faulted before timeout");
+                    throw task.Exception;
+                }
+                else if (task.IsCompleted)
+                {
+                    responseDelegate?.Invoke($"\n{action.Target}.{action.Method} completed before timeout");
+                    return true;
+                }
+            }
+
+            cancelSource.Cancel();
+
+            responseDelegate?.Invoke($"\n{action.Target}.{action.Method} timed out");
+            return false;
+        }
+
+        #endregion
     }
 }
